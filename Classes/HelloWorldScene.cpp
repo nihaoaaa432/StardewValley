@@ -1,6 +1,8 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "proj.win32/constant.h"
+#include "ui/CocosGUI.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -23,8 +25,13 @@ bool HelloWorld::init()
     {
         return false;
     }
+
+
+    //创建背景
     //获取游戏的窗口大小
     auto visibleSize = Director::getInstance()->getVisibleSize();
+
+
     //获取屏幕的原点位置，即左下角坐标，通常是（0,0）
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     auto background = Sprite::create("StartScene.jpg");
@@ -40,6 +47,8 @@ bool HelloWorld::init()
     background->setPosition(origin.x+ visibleSize.width / 2, origin.y+ visibleSize.height / 2);
 
     this->addChild(background, 0);
+
+    //添加艺术字
     auto sprite = Sprite::create("begin.png");
     if (sprite == nullptr)
     {
@@ -49,13 +58,45 @@ bool HelloWorld::init()
     {
         sprite->setScale(0.75);
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height*3/4 + origin.y));
+        sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height * 3 / 4 + origin.y));
 
         // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
-    //auto button = MenuItemImage::create("CreateANewRole",)
-    //auto startNode = Menu::create()
+
+    // 创建文本框
+    auto textField = cocos2d::ui::TextField::create(u8"请输入您的游戏昵称", "../Resources/fonts/DingDingJinBuTi.ttf", 30);
+    textField->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    textField->setMaxLength(6);
+    textField->setMaxLengthEnabled(true);
+    textField->setTextColor(cocos2d::Color4B(0, 32, 96, 255));
+    this->addChild(textField);
+    // 创建标签
+    auto promptLabel = Label::createWithTTF("", "../Resources/Fonts/DingDingJinBuTi.ttf", 30);
+    promptLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2-50));
+    promptLabel->setTextColor(cocos2d::Color4B(0, 32, 96, 255));
+    this->addChild(promptLabel);
+
+    // 为文本框添加事件监听器
+    textField->addEventListener([promptLabel](Ref* sender, cocos2d::ui::TextField::EventType type) {
+        if (type == cocos2d::ui::TextField::EventType::INSERT_TEXT || type == cocos2d::ui::TextField::EventType::DELETE_BACKWARD) {
+            auto textField = dynamic_cast<cocos2d::ui::TextField*>(sender);
+            std::string nickname = textField->getString();
+            std::string text = u8"欢迎来到星露谷物语！" + nickname;
+            promptLabel->setString(text);
+        }
+        });
+
+    auto startButton = MenuItemImage::create("CreateANewRole.png", "CreateANewRoleSelect.png");
+    float stratButtonX = targetSize.width / originalSize.width;
+    float stratButtonY = targetSize.height / originalSize.height;
+
+    // 设置缩放比例
+    startButton->setScale(stratButtonX, stratButtonY);
+    startButton->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5);
+    this->addChild(startButton);
+
+
     return true;
 }
 
