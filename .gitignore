@@ -1,0 +1,36 @@
+# 忽略 Cocos2d 引擎的源代码
+/cocos2d/        # 如果引擎代码位于项目目录下，排除整个 cocos2d 文件夹
+
+# 忽略引擎构建的输出目录
+/build/          # 忽略构建目录
+/lib/            # 忽略构建生成的库文件
+/bin/            # 忽略可执行文件
+/obj/            # 忽略编译中间文件
+
+# 忽略平台特定的项目文件夹
+/proj.android/   # 忽略 Android 平台构建文件
+/proj.ios_mac/   # 忽略 iOS/macOS 平台构建文件
+# /proj.win32/     # 忽略 Windows 平台构建文件
+
+# 忽略 IDE 和开发环境生成的临时文件
+/.vs/            # Visual Studio 配置文件夹
+/.idea/          # IntelliJ IDEA 配置文件夹
+.vscode/          # VS Code 配置文件夹
+
+# 忽略操作系统生成的临时文件
+.DS_Store        # macOS 系统的临时文件
+Thumbs.db        # Windows 系统的缩略图缓存文件
+
+# 忽略 CMake 构建输出文件
+/CMakeFiles/      # CMake 临时文件
+/CMakeCache.txt  # CMake 配置文件
+Makefile          # 如果使用了 Makefile 生成构建文件
+
+# 忽略日志文件
+*.log            # 忽略日志文件
+
+# 忽略用户配置文件
+*.user           # 用户环境配置文件
+*.suo            # Visual Studio 用户设置文件
+*.userosscache   # Visual Studio 临时文件
+*.sln.docstates  # Visual Studio 的文档状态文件
