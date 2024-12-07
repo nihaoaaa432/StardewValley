@@ -34,3 +34,11 @@ Makefile          # 如果使用了 Makefile 生成构建文件
 *.suo            # Visual Studio 用户设置文件
 *.userosscache   # Visual Studio 临时文件
 *.sln.docstates  # Visual Studio 的文档状态文件
+
+# 忽略所有的 Debug 文件
+Debug.win32/
+# 忽略所有的 DLL 和库文件
+*.dll
+*.lib
+*.pdb
+*.obj
