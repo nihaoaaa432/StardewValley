@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "proj.win32/constant.h"
 #include "ui/CocosGUI.h"
+#include "MapScene.h"
 //#include "constant.h"
 USING_NS_CC;
 std::string playerName = "";
@@ -106,21 +107,22 @@ bool HelloWorld::init()
     nameLabel->setVisible(false);
     nameLabel->setTextColor(cocos2d::Color4B(COLOR_RED, COLOR_GREEN, COLOR_BLUE, ALPHA));
 
-    //// 为按钮添加事件
-    //startButton->addClickEventListener([this,nameLabel,textField](Ref* sender) {
-    //    std::string nickname = textField->getString();
-    //    if (nickname.empty()) {
-    //        nameLabel->setString(u8"游戏昵称不能为空");
-    //        nameLabel->setVisible(true);
-    //        this->scheduleOnce([nameLabel](float dt) {
-    //            nameLabel->setVisible(false);
-    //            }, 1.5, "HideEmptyPromptLabel");
-    //    }
-    //    else {
-    //        playerName = nickname;
-    //        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, SelectionScene::createScene(), cocos2d::Color3B::WHITE));
-    //    }
-    //    });
+    // 为按钮添加事件
+    startButton->addClickEventListener([this,nameLabel,textField](Ref* sender) {
+        std::string nickname = textField->getString();
+        if (nickname.empty()) {
+            nameLabel->setString(u8"游戏昵称不能为空");
+            nameLabel->setVisible(true);
+            this->scheduleOnce([nameLabel](float dt) {
+                nameLabel->setVisible(false);
+                }, 1.5, "HideEmptyPromptLabel");
+        }
+        else {
+
+            playerName = nickname;
+            cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, MapScene::createScene(), cocos2d::Color3B::WHITE));
+        }
+        });
     return true;
 }
 
