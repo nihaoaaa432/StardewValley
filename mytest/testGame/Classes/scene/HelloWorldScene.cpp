@@ -3,7 +3,6 @@
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
 #include "TownScene.h"
-//#include "constant.h"
 USING_NS_CC;
 std::string playerName = "";
 Scene* HelloWorld::createScene()
