@@ -2,6 +2,10 @@
 #include "TownScene.h"
 MapScene* MapScene::_instance = nullptr;
 
+//调整玩家位置
+void MapScene::setPlayerPosition(cocos2d::Vec2& position) {
+    this->player->setPosition(position.x, position.y);
+}
 // 调整镜头高度的函数
 void MapScene::setCameraHeight(float height) {
     auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
@@ -155,16 +159,14 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
-// 检查玩家是否到达触发地图切换的区域
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
-
-    if (position.x > FROM_FARM_TO_TOWN) {
-        // 玩家到达了触发区域，切换到新的地图
+    if (position.x > FROM_FARM_TO_TOWN_X) {
         auto townScene = TownScene::getInstance();
-        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, townScene, cocos2d::Color3B::WHITE));
+        townScene->setPlayerPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X+16, FROM_TOWN_TO_FARM_Y));
+        moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
+        cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
     }
 }
-
 
 // 镜头跟随角色的函数
 void MapScene::updateCameraPosition() {

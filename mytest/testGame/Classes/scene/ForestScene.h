@@ -12,18 +12,32 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     CREATE_FUNC(ForestScene);
+    // 获取单例实例
+    static ForestScene* getInstance() {
+        if (!_instance) {
+            _instance = ForestScene::create();
+        }
+        return _instance;
+    }
+
+    // 销毁单例实例
+    static void destroyInstance() {
+        if (_instance) {
+            _instance->release();
+            _instance = nullptr;
+        }
+    }
 
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Sprite* player;         // 角色精灵
     cocos2d::Vec2 moveDirection;     // 移动方向
     float speed = 100.0f;            // 移动速度
-
+    static ForestScene* _instance; // 静态单例指针
     InventoryLayer* inventoryLayer; //背包界面层
     StoppingLayer* stoppingLayer;    // 暂停界面层
 
-    // void ForestScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void ForestScene::onBKeyPressed();
+    void onBKeyPressed();
 
     void update(float deltaTime);    // 每帧更新函数
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);

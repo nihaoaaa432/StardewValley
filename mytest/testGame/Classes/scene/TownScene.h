@@ -5,12 +5,16 @@
 #include"layer/StoppingLayer.h"
 #define SIZE_TOWN_X 100
 #define SIZE_TOWN_Y 100
-#define FROM_TOWN_TO_FARM 0
+// 从town到farm的纵坐标
+#define FROM_TOWN_TO_FARM_Y 16* SIZE_TOWN_Y *0.8+18*16 
+#define FROM_TOWN_TO_FARM_X 0
 class TownScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     CREATE_FUNC(TownScene);
+    void setPlayerPosition(cocos2d::Vec2& position);
+
     // 获取单例实例
     static TownScene* getInstance() {
         if (!_instance) {

@@ -1,5 +1,7 @@
 #include "ForestScene.h"
 #include "TownScene.h"
+
+ForestScene* ForestScene::_instance = nullptr;
 // 调整镜头高度的函数
 void ForestScene::setCameraHeight(float height) {
     auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
@@ -22,7 +24,7 @@ bool ForestScene::init() {
     }
 
     // 加载地图
-    map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
+    map = cocos2d::TMXTiledMap::create("forest/forest.tmx");
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
