@@ -93,8 +93,8 @@ bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
             // 不知为何要乘1.25
-            float x = objMap["x"].asFloat() - 25 * 16 * 1.25;
-            float y = objMap["y"].asFloat() - 25 * 16 * 1.25;
+            float x = objMap["x"].asFloat() ;
+            float y = objMap["y"].asFloat();
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 

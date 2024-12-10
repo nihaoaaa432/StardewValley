@@ -39,11 +39,6 @@ bool MapScene::init() {
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
 
-    // 注册键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-
     // 设置镜头初始高度
     setCameraHeight(100.0f);  // 根据需要调整这个值
 
@@ -52,11 +47,11 @@ bool MapScene::init() {
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
 
-    //// 键盘事件监听器
-    //auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    //keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    //keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
-    //_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    // 键盘事件监听器
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
