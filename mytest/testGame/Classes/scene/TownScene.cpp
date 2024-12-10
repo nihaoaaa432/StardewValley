@@ -1,33 +1,19 @@
-#include "MapScene.h"
 #include "TownScene.h"
-// 调整镜头高度的函数
-void MapScene::setCameraHeight(float height) {
-    auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
-    if (camera) {
-        // 获取当前摄像机的位置
-        cocos2d::Vec3 cameraPos = camera->getPosition3D();
 
-        // 设置新的高度
-        cameraPos.z = height;
-        camera->setPosition3D(cameraPos);
-    }
-}
-cocos2d::Scene* MapScene::createScene() {
-    return MapScene::create();
+cocos2d::Scene* TownScene::createScene() {
+    return TownScene::create();
 }
 
-bool MapScene::init() {
+bool TownScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
     // 加载地图
-    map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
+    map = cocos2d::TMXTiledMap::create("town/town.tmx");
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
-    // 设置镜头初始高度
-    setCameraHeight(100.0f);  // 根据需要调整这个值
 
     // 创建角色精灵
     player = cocos2d::Sprite::create("sand.png");
@@ -36,8 +22,8 @@ bool MapScene::init() {
 
     // 键盘事件监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(TownScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(TownScene::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 每帧更新
@@ -48,20 +34,19 @@ bool MapScene::init() {
     return true;
 }
 
-void MapScene::update(float deltaTime) {
+void TownScene::update(float deltaTime) {
     if (moveDirection != cocos2d::Vec2::ZERO) {
         cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
         if (canMoveToPosition(newPosition)) {
             player->setPosition(newPosition);  // 只有可以移动时才更新位置
         }
     }
-    checkMapSwitch(player->getPosition());
 
     // 更新镜头位置，确保镜头跟随角色
     updateCameraPosition();
 }
 
-void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void TownScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_W:
         moveDirection = cocos2d::Vec2(0, 1);  // 向上
@@ -80,7 +65,7 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
     }
 }
 
-void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void TownScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
@@ -89,7 +74,7 @@ void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
     }
 }
 
-bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
+bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -107,9 +92,9 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
         if (!walkable) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
-            // 不知为何要乘RATIO
-            float x = objMap["x"].asFloat() - 25 * 16 * RATIO;
-            float y = objMap["y"].asFloat() - 25 * 16 * RATIO;
+            // 不知为何要乘1.25
+            float x = objMap["x"].asFloat() - 25 * 16 * 1.25;
+            float y = objMap["y"].asFloat() - 25 * 16 * 1.25;
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
@@ -126,18 +111,10 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
-// 检查玩家是否到达触发地图切换的区域
-void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    // 设定切换地图的条件（比如玩家的 x, y 坐标在某个范围内）
-    if (position.x > 16 * 25 * RATIO) {
-        // 玩家到达了触发区域，切换到新的地图
-        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
-    }
-}
 
 
 // 镜头跟随角色的函数
-void MapScene::updateCameraPosition() {
+void TownScene::updateCameraPosition() {
     // 获取摄像机
     auto director = cocos2d::Director::getInstance();
     auto camera = director->getRunningScene()->getDefaultCamera();

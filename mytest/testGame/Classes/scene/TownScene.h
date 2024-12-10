@@ -1,11 +1,13 @@
 #pragma once
+
 #include "cocos2d.h"
-#define RATIO 1.25f
-class MapScene : public cocos2d::Scene {
+#define SIZE_X 100
+#define SIZE_Y 100
+class TownScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();
-    CREATE_FUNC(MapScene);
+    CREATE_FUNC(TownScene);
 
 private:
     cocos2d::TMXTiledMap* map;       // 地图
@@ -18,6 +20,4 @@ private:
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void updateCameraPosition();
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
-    void MapScene::checkMapSwitch(const cocos2d::Vec2& position);  //检测是否应该切换场景
-    void MapScene::setCameraHeight(float height);
 };
