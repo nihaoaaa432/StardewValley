@@ -50,9 +50,6 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="constant.h">
-      <Filter>win32</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\scene\HelloWorldScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>

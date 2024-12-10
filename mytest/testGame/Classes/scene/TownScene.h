@@ -1,8 +1,8 @@
 #pragma once
 
 #include "cocos2d.h"
-#define SIZE_X 100
-#define SIZE_Y 100
+#define SIZE_TOWN_X 100
+#define SIZE_TOWN_Y 100
 class TownScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();
