@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #define SIZE_X 100
 #define SIZE_Y 100
+#define FROM_HOME_TO_TOWN SIZE_Y*0.8*16+16*7
 class TownScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();

@@ -11,13 +11,13 @@ bool TownScene::init() {
 
     // 加载地图
     map = cocos2d::TMXTiledMap::create("town/town.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
+    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
 
     // 创建角色精灵
     player = cocos2d::Sprite::create("sand.png");
-    player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
+    player->setPosition(cocos2d::Vec2(0, FROM_HOME_TO_TOWN));  // 初始位置
     this->addChild(player);
 
     // 键盘事件监听器
