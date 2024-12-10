@@ -1,4 +1,6 @@
 #include "MapScene.h"
+#include"layer/InventoryLayer.h"
+#include"layer/StoppingLayer.h"
 
 cocos2d::Scene* MapScene::createScene() {
     return MapScene::create();
@@ -9,114 +11,161 @@ bool MapScene::init() {
         return false;
     }
 
-    // ¼ÓÔØµØÍ¼
+    // åŠ è½½åœ°å›¾
     map = cocos2d::TMXTiledMap::create("farm.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // ½«ÃªµãÉèÖÃÎªÖĞĞÄ
-    map->setPosition(cocos2d::Vec2(0, 0));  // ÉèÖÃµØÍ¼µÄÎ»ÖÃ    // ÉèÖÃµØÍ¼Ãªµã£¬È·±£µØÍ¼´Ó×óÏÂ½Ç¿ªÊ¼äÖÈ¾
+    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // å°†é”šç‚¹è®¾ç½®ä¸ºä¸­å¿ƒ
+    map->setPosition(cocos2d::Vec2(0, 0));  // è®¾ç½®åœ°å›¾çš„ä½ç½®    // è®¾ç½®åœ°å›¾é”šç‚¹ï¼Œç¡®ä¿åœ°å›¾ä»å·¦ä¸‹è§’å¼€å§‹æ¸²æŸ“
     this->addChild(map);
 
-    // ´´½¨½ÇÉ«¾«Áé
-    player = cocos2d::Sprite::create("sand.png");
+    // åˆ›å»ºèƒŒåŒ…å±‚
+    cinventoryLayer = CinventoryLayer::createLayer();
+    cinventoryLayer->setVisible(false);  // é»˜è®¤éšè—èƒŒåŒ…ç•Œé¢
+    this->addChild(cinventoryLayer);  // å°†èƒŒåŒ…ç•Œé¢æ·»åŠ åˆ°åœºæ™¯ä¸­
+
+    // åˆ›å»ºæš‚åœå±‚
+    auto stoppingLayer = StoppingLayer::createLayer();
+    stoppingLayer = static_cast<StoppingLayer*> (stoppingLayer->getChildByTag(StoppingLayer::menuSceneTag));
+    stoppingLayer->setVisible(false);  // é»˜è®¤éšè—æš‚åœç•Œé¢
+    stoppingLayer->setTag(StoppingLayer::menuSceneTag);  // è®¾ç½®æ ‡ç­¾
+    this->addChild(stoppingLayer);  // å°†æš‚åœç•Œé¢æ·»åŠ åˆ°åœºæ™¯ä¸­
+
+
+    // æ³¨å†Œé”®ç›˜äº‹ä»¶ç›‘å¬å™¨
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+
+    // åˆ›å»ºè§’è‰²ç²¾çµ
+    //player=player->Create("Abigail.png", 16, 32, 13, 8, 100.0f);
     //int mapHeight ;
     //float cocosX = 0;
     //float cocosY = mapHeight;
-    player->setPosition(cocos2d::Vec2(0, 0));  // ³õÊ¼Î»ÖÃ
-    this->addChild(player);
+    //player->SetPosition(cocos2d::Vec2(0, 0));  // åˆå§‹ä½ç½®
+    //this->addChild(player);
 
-    // ¼üÅÌÊÂ¼ş¼àÌıÆ÷
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    //// é”®ç›˜äº‹ä»¶ç›‘å¬å™¨
+    //auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    //keyboardListener->onKeyPressed = CC_CALLBACK_2(Cplayer::OnKeyPressed, this);
+    //keyboardListener->onKeyReleased = CC_CALLBACK_2(Cplayer::OnKeyReleased, this);
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
-    // Ã¿Ö¡¸üĞÂ
-    this->schedule([=](float deltaTime) {
-        update(deltaTime);
-        }, "update_key");
+    // æ¯å¸§æ›´æ–°
+    /*this->schedule([=](float deltaTime) {
+        player->update(deltaTime);
+        }, "update_key");*/
 
     return true;
 }
 
-void MapScene::update(float deltaTime) {
-    if (moveDirection != cocos2d::Vec2::ZERO) {
-        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
-        if (canMoveToPosition(newPosition)) {
-            player->setPosition(newPosition);  // Ö»ÓĞ¿ÉÒÔÒÆ¶¯Ê±²Å¸üĞÂÎ»ÖÃ
-        }
-    }
 
-    // ¸üĞÂ¾µÍ·Î»ÖÃ£¬È·±£¾µÍ·¸úËæ½ÇÉ«
-    updateCameraPosition();
-}
 
 void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    switch (keyCode) {
-    case cocos2d::EventKeyboard::KeyCode::KEY_W:
-        moveDirection = cocos2d::Vec2(0, 1);  // ÏòÉÏ
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_S:
-        moveDirection = cocos2d::Vec2(0, -1); // ÏòÏÂ
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_A:
-        moveDirection = cocos2d::Vec2(-1, 0); // Ïò×ó
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_D:
-        moveDirection = cocos2d::Vec2(1, 0);  // ÏòÓÒ
-        break;
-    default:
-        break;
+    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
+        onBKeyPressed();
+    }
+    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
+        // å¤„ç† "ESC" é”®è¢«æŒ‰ä¸‹çš„é€»è¾‘
+        auto stoppingLayer = static_cast<StoppingLayer*>(this->getChildByTag(StoppingLayer::menuSceneTag));
+        if (!stoppingLayer->isVisible()) {
+            stoppingLayer->setVisible(true);
+        }
+        else {
+            stoppingLayer->setVisible(false);
+        }
     }
 }
 
-void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
-        moveDirection = cocos2d::Vec2::ZERO;  // Í£Ö¹ÒÆ¶¯
+void MapScene::onBKeyPressed() {
+    // å¤„ç† "B" é”®è¢«æŒ‰ä¸‹çš„é€»è¾‘
+    if (!cinventoryLayer->isVisible()) {
+        cinventoryLayer->setVisible(true);
+    }
+    else {
+        cinventoryLayer->setVisible(false);
     }
 }
+
+//void MapScene::update(float deltaTime) {
+//    if (moveDirection != cocos2d::Vec2::ZERO) {
+//        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
+//        if (canMoveToPosition(newPosition)) {
+//            player->setPosition(newPosition);  // åªæœ‰å¯ä»¥ç§»åŠ¨æ—¶æ‰æ›´æ–°ä½ç½®
+//        }
+//    }
+//
+//    // æ›´æ–°é•œå¤´ä½ç½®ï¼Œç¡®ä¿é•œå¤´è·Ÿéšè§’è‰²
+//    updateCameraPosition();
+//}
+//
+//void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+//    switch (keyCode) {
+//    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+//        moveDirection = cocos2d::Vec2(0, 1);  // å‘ä¸Š
+//        break;
+//    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+//        moveDirection = cocos2d::Vec2(0, -1); // å‘ä¸‹
+//        break;
+//    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+//        moveDirection = cocos2d::Vec2(-1, 0); // å‘å·¦
+//        break;
+//    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+//        moveDirection = cocos2d::Vec2(1, 0);  // å‘å³
+//        break;
+//    default:
+//        break;
+//    }
+//}
+//
+//void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+//    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
+//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
+//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
+//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
+//        moveDirection = cocos2d::Vec2::ZERO;  // åœæ­¢ç§»åŠ¨
+//    }
+//}
 
 bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
-    // »ñÈ¡¶ÔÏó²ã
-    auto objectLayer = map->getObjectGroup("walk");  // ¶ÔÏó²ãÃû³Æ
+    // è·å–å¯¹è±¡å±‚
+    auto objectLayer = map->getObjectGroup("walk");  // å¯¹è±¡å±‚åç§°
     if (!objectLayer) {
-        return true;  // Ã»ÓĞ¶ÔÏó²ãÔòÄ¬ÈÏÔÊĞíÒÆ¶¯
+        return true;  // æ²¡æœ‰å¯¹è±¡å±‚åˆ™é»˜è®¤å…è®¸ç§»åŠ¨
     }
 
-    // »ñÈ¡ËùÓĞ¶ÔÏó
+    // è·å–æ‰€æœ‰å¯¹è±¡
     auto objects = objectLayer->getObjects();
 
     for (const auto& obj : objects) {
         auto objMap = obj.asValueMap();
 
-        // ¼ì²é¶ÔÏóµÄ walkable ÊôĞÔ
+        // æ£€æŸ¥å¯¹è±¡çš„ walkable å±æ€§
         bool walkable = objMap["walkable"].asBool();
         float x = objMap["x"].asFloat();
         float y = objMap["y"].asFloat();
         float width = objMap["width"].asFloat();
         float height = objMap["height"].asFloat();
 
-        // ´´½¨¶ÔÏóµÄ±ß½ç¿ò
+        // åˆ›å»ºå¯¹è±¡çš„è¾¹ç•Œæ¡†
         cocos2d::Rect objRect(x, y, width, height);
 
-        // Èç¹ûÄ¿±êÎ»ÖÃÔÚ²»¿ÉĞĞ×ßµÄÇøÓòÄÚ£¬Ôò·µ»Ø false
+        // å¦‚æœç›®æ ‡ä½ç½®åœ¨ä¸å¯è¡Œèµ°çš„åŒºåŸŸå†…ï¼Œåˆ™è¿”å› false
         if (!walkable && objRect.containsPoint(position)) {
             return false;
         }
     }
 
-    // Èç¹û²»ÔÚÈÎºÎ²»¿ÉĞĞ×ßÇøÓòÄÚ£¬ÔòÔÊĞíÒÆ¶¯
+    // å¦‚æœä¸åœ¨ä»»ä½•ä¸å¯è¡Œèµ°åŒºåŸŸå†…ï¼Œåˆ™å…è®¸ç§»åŠ¨
     return true;
 }
 
-// ¾µÍ·¸úËæ½ÇÉ«µÄº¯Êı
+// é•œå¤´è·Ÿéšè§’è‰²çš„å‡½æ•°
 void MapScene::updateCameraPosition() {
-    // »ñÈ¡ÉãÏñ»ú
+    // è·å–æ‘„åƒæœº
     auto director = cocos2d::Director::getInstance();
     auto camera = director->getRunningScene()->getDefaultCamera();
     if (camera) {
-        // ÉèÖÃÉãÏñ»úµÄÎ»ÖÃ£¬È·±£½ÇÉ«Ê¼ÖÕÎ»ÓÚÆÁÄ»ÖĞÑë
-        camera->setPosition(player->getPosition());
+        // è®¾ç½®æ‘„åƒæœºçš„ä½ç½®ï¼Œç¡®ä¿è§’è‰²å§‹ç»ˆä½äºå±å¹•ä¸­å¤®
+       // camera->setPosition(player->getPosition());
     }
 }

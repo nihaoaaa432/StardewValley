@@ -1,5 +1,7 @@
 #pragma once
 #include "cocos2d.h"
+#include "Layer/inventoryLayer.h" 
+#include"layer/StoppingLayer.h"
 
 class MapScene : public cocos2d::Scene {
 public:
@@ -8,14 +10,20 @@ public:
     CREATE_FUNC(MapScene);
 
 private:
-    cocos2d::TMXTiledMap* map;       // µØÍ¼
-    cocos2d::Sprite* player;         // ½ÇÉ«¾«Áé
-    cocos2d::Vec2 moveDirection;     // ÒÆ¶¯·½Ïò
-    float speed = 100.0f;            // ÒÆ¶¯ËÙ¶È
+    cocos2d::TMXTiledMap* map;       // åœ°å›¾
+    //Cplayer* player;         // è§’è‰²ç²¾çµ
+    cocos2d::Vec2 moveDirection;     // ç§»åŠ¨æ–¹å‘
+    float speed = 100.0f;            // ç§»åŠ¨é€Ÿåº¦
 
-    void update(float deltaTime);    // Ã¿Ö¡¸üĞÂº¯Êı
-    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    CinventoryLayer* cinventoryLayer; //èƒŒåŒ…ç•Œé¢å±‚
+    StoppingLayer* stoppingLayer;    // æš‚åœç•Œé¢å±‚
+
+    void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void MapScene::onBKeyPressed();
+
+    //void update(float deltaTime);    // æ¯å¸§æ›´æ–°å‡½æ•°
+    //void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    //void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void updateCameraPosition();
-    bool canMoveToPosition(const cocos2d::Vec2& position);  // ¼ì²âÊÇ·ñ¿ÉÒÔÒÆ¶¯µ½Ä¿±êÎ»ÖÃ
+    bool canMoveToPosition(const cocos2d::Vec2& position);  // æ£€æµ‹æ˜¯å¦å¯ä»¥ç§»åŠ¨åˆ°ç›®æ ‡ä½ç½®
 };
