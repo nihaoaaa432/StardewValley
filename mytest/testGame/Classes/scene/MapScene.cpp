@@ -32,15 +32,13 @@ bool MapScene::init() {
     setCameraHeight(100.0f);  // ������Ҫ�������ֵ
 
     // 创建背包层
-    cinventoryLayer = CinventoryLayer::createLayer();
-    cinventoryLayer->setVisible(false);  // 默认隐藏背包界面
-    this->addChild(cinventoryLayer);  // 将背包界面添加到场景中
+    inventoryLayer = InventoryLayer::createLayer();
+    inventoryLayer->setVisible(false);  // 默认隐藏背包界面
+    this->addChild(inventoryLayer);  // 将背包界面添加到场景中
 
     // 创建暂停层
-    auto stoppingLayer = StoppingLayer::createLayer();
-    stoppingLayer = static_cast<StoppingLayer*> (stoppingLayer->getChildByTag(StoppingLayer::menuSceneTag));
+    stoppingLayer = StoppingLayer::createLayer();
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
-    stoppingLayer->setTag(StoppingLayer::menuSceneTag);  // 设置标签
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
 
@@ -79,25 +77,13 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         onBKeyPressed();
     }
     else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
-        // 处理 "ESC" 键被按下的逻辑
-        auto stoppingLayer = static_cast<StoppingLayer*>(this->getChildByTag(StoppingLayer::menuSceneTag));
-        if (!stoppingLayer->isVisible()) {
-            stoppingLayer->setVisible(true);
-        }
-        else {
-            stoppingLayer->setVisible(false);
-        }
+        stoppingLayer->setVisible(!stoppingLayer->isVisible());
     }
 }
 
 void MapScene::onBKeyPressed() {
     // 处理 "B" 键被按下的逻辑
-    if (!cinventoryLayer->isVisible()) {
-        cinventoryLayer->setVisible(true);
-    }
-    else {
-        cinventoryLayer->setVisible(false);
-    }
+    inventoryLayer->setVisible(!inventoryLayer->isVisible());
 }
 
 //void MapScene::update(float deltaTime) {
@@ -164,12 +150,13 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
-        // 创建对象的边界框
-        cocos2d::Rect objRect(x, y, width, height);
+            // 创建对象的边界框
+            cocos2d::Rect objRect(x, y, width, height);
 
-        // 如果目标位置在不可行走的区域内，则返回 false
-        if (!walkable && objRect.containsPoint(position)) {
-            return false;
+            // 如果目标位置在不可行走的区域内，则返回 false
+            if (!walkable && objRect.containsPoint(position)) {
+                return false;
+            }
         }
     }
 
@@ -177,8 +164,8 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     return true;
 }
 // �������Ƿ񵽴ﴥ����ͼ�л�������
-void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    // �趨�л���ͼ��������������ҵ� x, y ������ĳ����Χ�ڣ�
+void MapScene::checkMapSwitch(const cocos2d::Vec2 & position) {
+// �趨�л���ͼ��������������ҵ� x, y ������ĳ����Χ�ڣ�
     if (position.x > 16 * 25 * RATIO) {
         // ��ҵ����˴��������л����µĵ�ͼ
         cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));

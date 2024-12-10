@@ -1,6 +1,6 @@
 #pragma once
 #include "cocos2d.h"
-#include "Layer/inventoryLayer.h" 
+#include "layer/inventoryLayer.h" 
 #include"layer/StoppingLayer.h"
 
 #define RATIO 1.25f
@@ -16,7 +16,7 @@ private:
     cocos2d::Vec2 moveDirection;     // 移动方向
     float speed = 100.0f;            // 移动速度
 
-    CinventoryLayer* cinventoryLayer; //背包界面层
+    InventoryLayer* inventoryLayer; //背包界面层
     StoppingLayer* stoppingLayer;    // 暂停界面层
 
     void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
