@@ -2,8 +2,8 @@
 
 USING_NS_CC;
 
-CinventoryLayer* CinventoryLayer::createLayer() {
-    CinventoryLayer* ret = new CinventoryLayer();
+InventoryLayer* InventoryLayer::createLayer() {
+    InventoryLayer* ret = new InventoryLayer();
     if (ret && ret->init()) {
         ret->autorelease();
         return ret;
@@ -14,7 +14,7 @@ CinventoryLayer* CinventoryLayer::createLayer() {
     }
 }
 
-bool CinventoryLayer::init() {
+bool InventoryLayer::init() {
     if (!Layer::init()) {
         return false;
     }
@@ -46,38 +46,38 @@ bool CinventoryLayer::init() {
 
     // 添加按钮回调（用于切换页面）
     itemButton->addClickEventListener([this](Ref* sender) {
-        this->SwitchToPage(0); // 切换到物品页面
+        this->switchToPage(0); // 切换到物品页面
         });
 
     socialButton->addClickEventListener([this](Ref* sender) {
-        this->SwitchToPage(1); // 切换到社交关系页面
+        this->switchToPage(1); // 切换到社交关系页面
         });
 
-    // 创建物品页面
-    itemPage = Node::create();
-    this->addChild(itemPage, 2);
+    //// 创建物品页面
+    //itemPage = Node::create();
+    //this->addChild(itemPage, 2);
 
-    // 示例物品页面内容
-    auto itemLabel = Label::createWithTTF("物品页面", "fonts/arial.ttf", 24);
-    itemLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    itemPage->addChild(itemLabel);
+    //// 示例物品页面内容
+    //auto itemLabel = Label::createWithTTF("物品页面", "fonts/arial.ttf", 24);
+    //itemLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    //itemPage->addChild(itemLabel);
 
-    // 创建社交页面
-    socialPage = Node::create();
-    this->addChild(socialPage, 2);
+    //// 创建社交页面
+    //socialPage = Node::create();
+    //this->addChild(socialPage, 2);
 
-    // 示例社交页面内容
-    auto socialLabel = Label::createWithTTF("社交关系页面", "fonts/arial.ttf", 24);
-    socialLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    socialPage->addChild(socialLabel);
+    //// 示例社交页面内容
+    //auto socialLabel = Label::createWithTTF("社交关系页面", "fonts/arial.ttf", 24);
+    //socialLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    //socialPage->addChild(socialLabel);
 
     // 默认显示物品页面
-    currentPage = 0;
-    SwitchToPage(currentPage);
+    /*currentPage = 0;
+    switchToPage(currentPage);*/
 
     // 添加鼠标监听事件
     auto listener = EventListenerMouse::create();
-    listener->onMouseDown = CC_CALLBACK_1(CinventoryLayer::OnMouseDown, this);
+    listener->onMouseDown = CC_CALLBACK_1(InventoryLayer::onMouseDown, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // 创建关闭按钮
@@ -86,13 +86,13 @@ bool CinventoryLayer::init() {
     this->addChild(closeButton, 3);
 
     // 关闭按钮的回调
-    closeButton->addClickEventListener(CC_CALLBACK_1(CinventoryLayer::CloseInventoryLayer, this));
+    closeButton->addClickEventListener(CC_CALLBACK_1(InventoryLayer::closeInventoryLayer, this));
 
     return true;
 }
 
 // 切换页面
-void CinventoryLayer::SwitchToPage(int pageIndex) {
+void InventoryLayer::switchToPage(int pageIndex) {
     // 设置页面的可见性
     if (pageIndex == 0) {
         itemPage->setVisible(true);
@@ -106,7 +106,7 @@ void CinventoryLayer::SwitchToPage(int pageIndex) {
 }
 
 // 鼠标点击事件
-void CinventoryLayer::OnMouseDown(Event* event) {
+void InventoryLayer::onMouseDown(Event* event) {
     auto mouseEvent = (EventMouse*)event;
     auto mousePos = mouseEvent->getLocation();
 
@@ -116,16 +116,19 @@ void CinventoryLayer::OnMouseDown(Event* event) {
 
     // 判断鼠标点击的区域
     if (itemButtonArea.containsPoint(mousePos)) {
-        SwitchToPage(0);  // 切换到物品页面
+        switchToPage(0);  // 切换到物品页面
     }
     else if (socialButtonArea.containsPoint(mousePos)) {
-        SwitchToPage(1);  // 切换到社交页面
+        switchToPage(1);  // 切换到社交页面
     }
 }
 
 // 关闭背包界面
-void CinventoryLayer::CloseInventoryLayer(Ref* sender) {
+void InventoryLayer::closeInventoryLayer(Ref* sender) {
     // 关闭当前层
     Director::getInstance()->getRunningScene()->removeChild(this);
     //auto player= Director::getInstance()
+
+    //调用回调函数通知关闭背包
+
 }
