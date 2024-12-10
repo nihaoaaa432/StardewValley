@@ -4,24 +4,24 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 
-class CinventoryLayer : public cocos2d::Layer {
+class InventoryLayer : public cocos2d::Layer {
 public:
     // 创建层
-    static CinventoryLayer* createLayer();
+    static InventoryLayer* createLayer();
 
     // 初始化层
     virtual bool init();
 
     // 切换页面
-    void SwitchToPage(int pageIndex);
+    void switchToPage(int pageIndex);
 
     // 鼠标点击事件处理函数
-    void OnMouseDown(cocos2d::Event* event);
+    void onMouseDown(cocos2d::Event* event);
 
     // 关闭当前层
-    void CloseInventoryLayer(Ref* sender);
+    void closeInventoryLayer(Ref* sender);
 
-    CREATE_FUNC(CinventoryLayer);
+    CREATE_FUNC(InventoryLayer);
 
 private:
     // 页面容器

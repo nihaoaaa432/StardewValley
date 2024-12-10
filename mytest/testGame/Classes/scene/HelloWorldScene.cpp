@@ -1,8 +1,8 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include "proj.win32/constant.h"
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
+#include "TownScene.h"
 //#include "constant.h"
 USING_NS_CC;
 std::string playerName = "";

@@ -1,7 +1,19 @@
 #include "MapScene.h"
 #include"layer/InventoryLayer.h"
 #include"layer/StoppingLayer.h"
+#include "TownScene.h"
+// ������ͷ�߶ȵĺ���
+void MapScene::setCameraHeight(float height) {
+    auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
+    if (camera) {
+        // ��ȡ��ǰ�������λ��
+        cocos2d::Vec3 cameraPos = camera->getPosition3D();
 
+        // �����µĸ߶�
+        cameraPos.z = height;
+        camera->setPosition3D(cameraPos);
+    }
+}
 cocos2d::Scene* MapScene::createScene() {
     return MapScene::create();
 }
@@ -16,6 +28,8 @@ bool MapScene::init() {
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
+    // ���þ�ͷ��ʼ�߶�
+    setCameraHeight(100.0f);  // ������Ҫ�������ֵ
 
     // 创建背包层
     cinventoryLayer = CinventoryLayer::createLayer();
@@ -141,10 +155,14 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 
         // 检查对象的 walkable 属性
         bool walkable = objMap["walkable"].asBool();
-        float x = objMap["x"].asFloat();
-        float y = objMap["y"].asFloat();
-        float width = objMap["width"].asFloat();
-        float height = objMap["height"].asFloat();
+        if (!walkable) {
+            // ������󲻿����ߣ�������Ƿ񸲸�Ŀ��λ��
+            // ���½���������ڵ�ͼ���ĵ�����
+            // ��֪Ϊ��Ҫ��RATIO
+            float x = objMap["x"].asFloat() - 25 * 16 * RATIO;
+            float y = objMap["y"].asFloat() - 25 * 16 * RATIO;
+            float width = objMap["width"].asFloat();
+            float height = objMap["height"].asFloat();
 
         // 创建对象的边界框
         cocos2d::Rect objRect(x, y, width, height);
@@ -158,6 +176,15 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
+// �������Ƿ񵽴ﴥ����ͼ�л�������
+void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
+    // �趨�л���ͼ��������������ҵ� x, y ������ĳ����Χ�ڣ�
+    if (position.x > 16 * 25 * RATIO) {
+        // ��ҵ����˴��������л����µĵ�ͼ
+        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
+    }
+}
+
 
 // 镜头跟随角色的函数
 void MapScene::updateCameraPosition() {

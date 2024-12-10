@@ -2,8 +2,8 @@
 
 USING_NS_CC;
 
-CinventoryLayer* CinventoryLayer::createLayer() {
-    CinventoryLayer* ret = new CinventoryLayer();
+InventoryLayer* InventoryLayer::createLayer() {
+    InventoryLayer* ret = new InventoryLayer();
     if (ret && ret->init()) {
         ret->autorelease();
         return ret;
@@ -14,7 +14,7 @@ CinventoryLayer* CinventoryLayer::createLayer() {
     }
 }
 
-bool CinventoryLayer::init() {
+bool InventoryLayer::init() {
     if (!Layer::init()) {
         return false;
     }
@@ -77,7 +77,7 @@ bool CinventoryLayer::init() {
 
     // 添加鼠标监听事件
     auto listener = EventListenerMouse::create();
-    listener->onMouseDown = CC_CALLBACK_1(CinventoryLayer::OnMouseDown, this);
+    listener->onMouseDown = CC_CALLBACK_1(InventoryLayer::onMouseDown, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // 创建关闭按钮
@@ -128,4 +128,7 @@ void CinventoryLayer::CloseInventoryLayer(Ref* sender) {
     // 关闭当前层
     Director::getInstance()->getRunningScene()->removeChild(this);
     //auto player= Director::getInstance()
+
+    //���ûص�����֪ͨ�رձ���
+
 }
