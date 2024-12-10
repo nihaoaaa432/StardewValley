@@ -1,4 +1,3 @@
-#include "proj.win32/constant.h"
 #include "cocos2d.h"
 #include <string>
 #ifndef CHARACTER_H

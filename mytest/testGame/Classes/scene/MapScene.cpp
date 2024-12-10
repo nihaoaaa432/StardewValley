@@ -26,8 +26,7 @@ bool MapScene::init() {
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
-    // ���þ�ͷ��ʼ�߶�
-    setCameraHeight(100.0f);  // ������Ҫ�������ֵ
+    setCameraHeight(100.0f);  
 
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
@@ -53,11 +52,11 @@ bool MapScene::init() {
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    //// 键盘事件监听器
+    //auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    //keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
+    //keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
+    //_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
@@ -81,17 +80,6 @@ void MapScene::update(float deltaTime) {
 }
 
 void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
-        onBKeyPressed();
-    }
-    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
-        stoppingLayer->setVisible(!stoppingLayer->isVisible());
-    }
-}
-
-void MapScene::onBKeyPressed() {
-    // 处理 "B" 键被按下的逻辑
-    inventoryLayer->setVisible(!inventoryLayer->isVisible());
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_W:
         moveDirection = cocos2d::Vec2(0, 1);  // 向上
@@ -105,9 +93,24 @@ void MapScene::onBKeyPressed() {
     case cocos2d::EventKeyboard::KeyCode::KEY_D:
         moveDirection = cocos2d::Vec2(1, 0);  // 向右
         break;
+        
     default:
         break;
     }
+    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
+        onBKeyPressed();
+    }
+    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
+        stoppingLayer->setVisible(!stoppingLayer->isVisible());
+    }
+
+
+}
+
+void MapScene::onBKeyPressed() {
+    // 处理 "B" 键被按下的逻辑
+    inventoryLayer->setVisible(!inventoryLayer->isVisible());
+
 }
 
 void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
@@ -148,7 +151,6 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 
             // 如果目标位置在不可行走的区域内，则返回 false
             if (!walkable && objRect.containsPoint(position)) {
-            if (objRect.containsPoint(position)) {
                 return false;
             }
         }
@@ -159,7 +161,7 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 }
 // 检查玩家是否到达触发地图切换的区域
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    // 设定切换地图的条件（比如玩家的 x, y 坐标在某个范围内）
+
     if (position.x > FROM_FARM_TO_TOWN) {
         // 玩家到达了触发区域，切换到新的地图
         cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
