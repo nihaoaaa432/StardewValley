@@ -1,5 +1,7 @@
 #include "MapScene.h"
 #include "TownScene.h"
+MapScene* MapScene::_instance = nullptr;
+
 // 调整镜头高度的函数
 void MapScene::setCameraHeight(float height) {
     auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
@@ -26,7 +28,6 @@ bool MapScene::init() {
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
-    setCameraHeight(100.0f);  
 
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
@@ -159,7 +160,8 @@ void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
 
     if (position.x > FROM_FARM_TO_TOWN) {
         // 玩家到达了触发区域，切换到新的地图
-        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
+        auto townScene = TownScene::getInstance();
+        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, townScene, cocos2d::Color3B::WHITE));
     }
 }
 

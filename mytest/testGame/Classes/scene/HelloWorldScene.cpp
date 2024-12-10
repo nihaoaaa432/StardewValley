@@ -2,7 +2,6 @@
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
-#include "TownScene.h"
 USING_NS_CC;
 std::string playerName = "";
 Scene* HelloWorld::createScene()
@@ -119,7 +118,8 @@ bool HelloWorld::init()
         else {
 
             playerName = nickname;
-            cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, MapScene::createScene(), cocos2d::Color3B::WHITE));
+            auto mapScene = MapScene::getInstance();
+            cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
         }
         });
     return true;
