@@ -108,8 +108,8 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
             // 不知为何要乘RATIO
-            float x = objMap["x"].asFloat() - 25 * 16 * RATIO;
-            float y = objMap["y"].asFloat() - 25 * 16 * RATIO;
+            float x = objMap["x"].asFloat() - SIZE_FARM_X /2 * 16 * RATIO;
+            float y = objMap["y"].asFloat() - SIZE_FARM_Y /2 * 16 * RATIO;
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
@@ -129,7 +129,7 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 // 检查玩家是否到达触发地图切换的区域
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     // 设定切换地图的条件（比如玩家的 x, y 坐标在某个范围内）
-    if (position.x > 16 * 25 * RATIO) {
+    if (position.x > FROM_FARM_TO_TOWN) {
         // 玩家到达了触发区域，切换到新的地图
         cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
     }

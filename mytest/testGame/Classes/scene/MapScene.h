@@ -4,6 +4,9 @@
 #include"layer/StoppingLayer.h"
 
 #define RATIO 1.25f
+#define FROM_FARM_TO_TOWN 16 * 25 * RATIO
+#define SIZE_FARM_X 50
+#define SIZE_FARM_Y 50
 class MapScene : public cocos2d::Scene {
 public:
     static cocos2d::Scene* createScene();
