@@ -24,7 +24,7 @@ bool TownScene::init() {
 
     // 创建角色精灵
     player = cocos2d::Sprite::create("sand.png");
-    player->setPosition(cocos2d::Vec2(0, FROM_TOWN_TO_FARM_Y));  // 初始位置
+    player->setPosition(cocos2d::Vec2(0, FROM_TOWN_TO_FARM_Y_UP));  // 初始位置
     this->addChild(player);
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
@@ -156,7 +156,7 @@ void TownScene::updateCameraPosition() {
 }
 // 检查玩家是否到达触发地图切换的区域
 void TownScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    if (position.x < FROM_TOWN_TO_FARM_X) {
+    if (position.x < FROM_TOWN_TO_FARM_X&&position.y>FROM_TOWN_TO_FARM_Y_UP -16&&position.y< FROM_TOWN_TO_FARM_Y_UP+16) {
         auto mapScene = MapScene::getInstance();
         mapScene->setPlayerPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X -16, FROM_FARM_TO_TOWN_Y));
         moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动

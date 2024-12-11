@@ -168,7 +168,7 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
         auto townScene = TownScene::getInstance();
-        townScene->setPlayerPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X+16, FROM_TOWN_TO_FARM_Y));
+        townScene->setPlayerPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X+16, FROM_TOWN_TO_FARM_Y_UP));
         moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
         cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
     }

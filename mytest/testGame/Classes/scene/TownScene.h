@@ -6,7 +6,8 @@
 #define SIZE_TOWN_X 100
 #define SIZE_TOWN_Y 100
 // 从town到farm的纵坐标
-#define FROM_TOWN_TO_FARM_Y 16* SIZE_TOWN_Y *0.8+18*16 
+#define FROM_TOWN_TO_FARM_Y_UP 16* SIZE_TOWN_Y *0.8+18*16 
+#define FROM_TOWN_TO_FARM_Y_DOWN FROM_TOWN_TO_FARM_Y_UP-16
 #define FROM_TOWN_TO_FARM_X 0
 class TownScene : public cocos2d::Scene {
 public:

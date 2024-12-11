@@ -35,7 +35,7 @@ private:
     cocos2d::TMXTiledMap* map;       // 地图
     Player* player;         // 角色精灵
     cocos2d::Vec2 moveDirection;     // 移动方向
-    float speed = 100.0f;            // 移动速度
+    float speed = 500.0f;            // 移动速度
     static MapScene* _instance; // 静态单例指针
 
     InventoryLayer* inventoryLayer; //背包界面层
