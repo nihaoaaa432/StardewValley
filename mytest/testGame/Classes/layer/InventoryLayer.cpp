@@ -1,9 +1,9 @@
-ï»¿#include "InventoryLayer.h"
+#include "InventoryLayer.h"
 
 USING_NS_CC;
 
 InventoryLayer* InventoryLayer::createLayer() {
-    InventoryLayer* ret = new InventoryLayer();
+    InventoryLayer* ret = new(std::nothrow) InventoryLayer();
     if (ret && ret->init()) {
         ret->autorelease();
         return ret;
@@ -19,81 +19,81 @@ bool InventoryLayer::init() {
         return false;
     }
 
-    // èŽ·å–å±å¹•å°ºå¯¸
+    // »ñÈ¡ÆÁÄ»³ß´ç
     auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
-    // èƒŒåŒ…èƒŒæ™¯
+    // ±³°ü±³¾°
     auto background = Sprite::create("Inventory.png");
     background->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
     this->addChild(background, 1);
 
-    // åˆ›å»ºä¾§è¾¹æŒ‰é’®æ 
-    auto buttonBar = Node::create(); // æŒ‰é’®æ èŠ‚ç‚¹ï¼ŒæŒ‡é’ˆè¡¨ç¤ºæ•°ç»„
+    // ´´½¨²à±ß°´Å¥À¸
+    auto buttonBar = Node::create(); // °´Å¥À¸½Úµã£¬Ö¸Õë±íÊ¾Êý×é
     buttonBar->setPosition(Vec2(953, 567));
     this->addChild(buttonBar, 2);
 
-    // æ·»åŠ æŒ‰é’®ï¼ˆç‰©å“ã€ç¤¾äº¤ï¼‰
-    auto itemButton = ui::Button::create("Invnt_backpack.png"); // ç‰©å“æŒ‰é’®
+    // Ìí¼Ó°´Å¥£¨ÎïÆ·¡¢Éç½»£©
+    auto itemButton = ui::Button::create("Invnt_backpack.png"); // ÎïÆ·°´Å¥
     itemButton->setContentSize(Size(60, 60));
     itemButton->setPosition(Vec2(0, -80));
     buttonBar->addChild(itemButton);
 
-    auto socialButton = ui::Button::create("Invnt_social.png"); // ç¤¾äº¤æŒ‰é’®
+    auto socialButton = ui::Button::create("Invnt_social.png"); // Éç½»°´Å¥
     socialButton->setContentSize(Size(60, 60));
-    socialButton->setPosition(Vec2(0, -180));
+    socialButton->setPosition(Vec2(0,-180 ));
     buttonBar->addChild(socialButton);
 
-    // æ·»åŠ æŒ‰é’®å›žè°ƒï¼ˆç”¨äºŽåˆ‡æ¢é¡µé¢ï¼‰
+    // Ìí¼Ó°´Å¥»Øµ÷£¨ÓÃÓÚÇÐ»»Ò³Ãæ£©
     itemButton->addClickEventListener([this](Ref* sender) {
-        this->SwitchToPage(0); // åˆ‡æ¢åˆ°ç‰©å“é¡µé¢
+        this->switchToPage(0); // ÇÐ»»µ½ÎïÆ·Ò³Ãæ
         });
 
     socialButton->addClickEventListener([this](Ref* sender) {
-        this->SwitchToPage(1); // åˆ‡æ¢åˆ°ç¤¾äº¤å…³ç³»é¡µé¢
+        this->switchToPage(1); // ÇÐ»»µ½Éç½»¹ØÏµÒ³Ãæ
         });
 
-    //// åˆ›å»ºç‰©å“é¡µé¢
+    //// ´´½¨ÎïÆ·Ò³Ãæ
     //itemPage = Node::create();
     //this->addChild(itemPage, 2);
 
-    //// ç¤ºä¾‹ç‰©å“é¡µé¢å†…å®¹
-    //auto itemLabel = Label::createWithTTF("ç‰©å“é¡µé¢", "fonts/arial.ttf", 24);
+    //// Ê¾ÀýÎïÆ·Ò³ÃæÄÚÈÝ
+    //auto itemLabel = Label::createWithTTF("ÎïÆ·Ò³Ãæ", "fonts/arial.ttf", 24);
     //itemLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
     //itemPage->addChild(itemLabel);
 
-    //// åˆ›å»ºç¤¾äº¤é¡µé¢
+    //// ´´½¨Éç½»Ò³Ãæ
     //socialPage = Node::create();
     //this->addChild(socialPage, 2);
 
-    //// ç¤ºä¾‹ç¤¾äº¤é¡µé¢å†…å®¹
-    //auto socialLabel = Label::createWithTTF("ç¤¾äº¤å…³ç³»é¡µé¢", "fonts/arial.ttf", 24);
+    //// Ê¾ÀýÉç½»Ò³ÃæÄÚÈÝ
+    //auto socialLabel = Label::createWithTTF("Éç½»¹ØÏµÒ³Ãæ", "fonts/arial.ttf", 24);
     //socialLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
     //socialPage->addChild(socialLabel);
 
-    // é»˜è®¤æ˜¾ç¤ºç‰©å“é¡µé¢
-    //currentPage = 0;
-   // SwitchToPage(currentPage);
+    // Ä¬ÈÏÏÔÊ¾ÎïÆ·Ò³Ãæ
+    /*currentPage = 0;
+    switchToPage(currentPage);*/
 
-    // æ·»åŠ é¼ æ ‡ç›‘å¬äº‹ä»¶
+    // Ìí¼ÓÊó±ê¼àÌýÊÂ¼þ
     auto listener = EventListenerMouse::create();
     listener->onMouseDown = CC_CALLBACK_1(InventoryLayer::onMouseDown, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    // åˆ›å»ºå…³é—­æŒ‰é’®
-    auto closeButton = ui::Button::create("close.png");  // å…³é—­æŒ‰é’®
-    closeButton->setPosition(Vec2(955, 565)); // æ”¾åœ¨å³ä¸Šè§’
+    // ´´½¨¹Ø±Õ°´Å¥
+    auto closeButton = ui::Button::create("close.png");  // ¹Ø±Õ°´Å¥
+    closeButton->setPosition(Vec2(955, 565)); // ·ÅÔÚÓÒÉÏ½Ç
     this->addChild(closeButton, 3);
 
-    // å…³é—­æŒ‰é’®çš„å›žè°ƒ
-    closeButton->addClickEventListener(CC_CALLBACK_1(CinventoryLayer::CloseInventoryLayer, this));
+    // ¹Ø±Õ°´Å¥µÄ»Øµ÷
+    closeButton->addClickEventListener(CC_CALLBACK_1(InventoryLayer::closeInventoryLayer, this));
 
     return true;
 }
 
-// åˆ‡æ¢é¡µé¢
-void CinventoryLayer::SwitchToPage(int pageIndex) {
-    // è®¾ç½®é¡µé¢çš„å¯è§æ€§
+// ÇÐ»»Ò³Ãæ
+void InventoryLayer::switchToPage(int pageIndex) {
+    // ÉèÖÃÒ³ÃæµÄ¿É¼ûÐÔ
     if (pageIndex == 0) {
         itemPage->setVisible(true);
         socialPage->setVisible(false);
@@ -102,33 +102,33 @@ void CinventoryLayer::SwitchToPage(int pageIndex) {
         itemPage->setVisible(false);
         socialPage->setVisible(true);
     }
-    currentPage = pageIndex; // æ›´æ–°å½“å‰é¡µé¢ç´¢å¼•
+    currentPage = pageIndex; // ¸üÐÂµ±Ç°Ò³ÃæË÷Òý
 }
 
-// é¼ æ ‡ç‚¹å‡»äº‹ä»¶
-void CinventoryLayer::OnMouseDown(Event* event) {
+// Êó±êµã»÷ÊÂ¼þ
+void InventoryLayer::onMouseDown(Event* event) {
     auto mouseEvent = (EventMouse*)event;
     auto mousePos = mouseEvent->getLocation();
 
-    // èŽ·å–æŒ‰é’®åŒºåŸŸï¼ˆç‰©å“æŒ‰é’®å’Œç¤¾äº¤æŒ‰é’®çš„çŸ©å½¢åŒºåŸŸï¼‰
+    // »ñÈ¡°´Å¥ÇøÓò£¨ÎïÆ·°´Å¥ºÍÉç½»°´Å¥µÄ¾ØÐÎÇøÓò£©
     auto itemButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 - 150, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
     auto socialButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 + 50, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
 
-    // åˆ¤æ–­é¼ æ ‡ç‚¹å‡»çš„åŒºåŸŸ
+    // ÅÐ¶ÏÊó±êµã»÷µÄÇøÓò
     if (itemButtonArea.containsPoint(mousePos)) {
-        SwitchToPage(0);  // åˆ‡æ¢åˆ°ç‰©å“é¡µé¢
+        switchToPage(0);  // ÇÐ»»µ½ÎïÆ·Ò³Ãæ
     }
     else if (socialButtonArea.containsPoint(mousePos)) {
-        SwitchToPage(1);  // åˆ‡æ¢åˆ°ç¤¾äº¤é¡µé¢
+        switchToPage(1);  // ÇÐ»»µ½Éç½»Ò³Ãæ
     }
 }
 
-// å…³é—­èƒŒåŒ…ç•Œé¢
-void CinventoryLayer::CloseInventoryLayer(Ref* sender) {
-    // å…³é—­å½“å‰å±‚
+// ¹Ø±Õ±³°ü½çÃæ
+void InventoryLayer::closeInventoryLayer(Ref* sender) {
+    // ¹Ø±Õµ±Ç°²ã
     Director::getInstance()->getRunningScene()->removeChild(this);
     //auto player= Director::getInstance()
 
-    //ï¿½ï¿½ï¿½Ã»Øµï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öªï¿½Ø±Õ±ï¿½ï¿½ï¿½
+    //µ÷ÓÃ»Øµ÷º¯ÊýÍ¨Öª¹Ø±Õ±³°ü
 
 }

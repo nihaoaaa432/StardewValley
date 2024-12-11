@@ -3,7 +3,7 @@
 USING_NS_CC;
 
 MouseCoordinateLayer* MouseCoordinateLayer::createLayer() {
-    MouseCoordinateLayer* ret = new MouseCoordinateLayer();
+    MouseCoordinateLayer* ret = new(std::nothrow) MouseCoordinateLayer();
     if (ret && ret->init()) {
         ret->autorelease();
         return ret;
