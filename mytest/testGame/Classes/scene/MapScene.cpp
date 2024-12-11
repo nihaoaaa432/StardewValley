@@ -1,5 +1,6 @@
 #include "MapScene.h"
 #include "TownScene.h"
+
 MapScene* MapScene::_instance = nullptr;
 
 //调整玩家位置
@@ -45,10 +46,12 @@ bool MapScene::init() {
 
 
     // 设置镜头初始高度
-    setCameraHeight(100.0f);  // 根据需要调整这个值
+    setCameraHeight(50.0f);  // 根据需要调整这个值
 
     // 创建角色精灵
-    player = cocos2d::Sprite::create("sand.png");
+    //player = Player::createWithAttributes("Abigail.png", "Abigail");
+    player = Player::getInstance();
+    //player = cocos2d::Sprite::create("sand.png");
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
 
@@ -61,7 +64,7 @@ bool MapScene::init() {
     // 每帧更新
     this->schedule([=](float deltaTime) {
         update(deltaTime);
-        }, "update_key");
+        },0.02f, "update_key");
 
     return true;
 }
@@ -70,7 +73,8 @@ void MapScene::update(float deltaTime) {
     if (moveDirection != cocos2d::Vec2::ZERO) {
         cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
         if (canMoveToPosition(newPosition)) {
-            player->setPosition(newPosition);  // 只有可以移动时才更新位置
+            player->moveInDirection(moveDirection);  // 只有可以移动时才更新位置
+            //player->setPosition(newPosition);
         }
     }
     checkMapSwitch(player->getPosition());
@@ -118,7 +122,8 @@ void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
-        moveDirection = cocos2d::Vec2::ZERO;  // 停止移动
+        moveDirection = cocos2d::Vec2::ZERO;
+        player->stopMoving(); // 停止移动
     }
 }
 
@@ -159,6 +164,7 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
+
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
         auto townScene = TownScene::getInstance();

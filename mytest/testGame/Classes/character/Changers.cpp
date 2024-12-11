@@ -28,9 +28,9 @@ bool Changers::initWithAttributes(const std::string& altas, const std::string& n
     sprite->setPosition(0, 0);
     this->addChild(sprite);
 
-    nameLabel = Label::createWithSystemFont(name, "Abigail", 10);
-    nameLabel->setPosition(0, 10);
-    this->addChild(nameLabel);//此时会显示名称
+    //nameLabel = Label::createWithSystemFont(name, "Abigail", 10);
+    //nameLabel->setPosition(0, 10);
+    //this->addChild(nameLabel);//此时会显示名称
 
     return true;
 }

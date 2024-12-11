@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 #include "layer/inventoryLayer.h" 
 #include"layer/StoppingLayer.h"
+#include "character/Player.h"
 
 #define RATIO 1.25f
 #define FROM_FARM_TO_TOWN_X 16 * 25 * RATIO
@@ -32,7 +33,7 @@ public:
 
 private:
     cocos2d::TMXTiledMap* map;       // 地图
-    cocos2d::Sprite* player;         // 角色精灵
+    Player* player;         // 角色精灵
     cocos2d::Vec2 moveDirection;     // 移动方向
     float speed = 100.0f;            // 移动速度
     static MapScene* _instance; // 静态单例指针

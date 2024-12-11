@@ -33,9 +33,6 @@
     <ClCompile Include="..\Classes\layer\InventoryLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Characters.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\helper\MouseCoordinateLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -44,6 +41,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\scene\ForestScene.cpp">
       <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Changers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Player.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,14 +71,17 @@
     <ClInclude Include="..\Classes\layer\StoppingLayer.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Characters.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\helper\MouseCoordinateLayer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\scene\ForestScene.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Changers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Player.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>Abigail_stand_down.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{14,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{14,27}</string>
+                <key>textureRect</key>
+                <string>{{0,0},{14,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>14 27 0 27 0 0 14 0</string>
+                <key>verticesUV</key>
+                <string>14 27 0 27 0 0 14 0</string>
+            </dict>
+            <key>Abigail_stand_left.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,27}</string>
+                <key>textureRect</key>
+                <string>{{14,26},{13,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 27 0 27 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>27 53 14 53 14 26 27 26</string>
+            </dict>
+            <key>Abigail_stand_right.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,27}</string>
+                <key>textureRect</key>
+                <string>{{0,53},{13,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 27 0 27 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>13 80 0 80 0 53 13 53</string>
+            </dict>
+            <key>Abigail_stand_up.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{12,27}</string>
+                <key>spriteSourceSize</key>
+                <string>{12,27}</string>
+                <key>textureRect</key>
+                <string>{{40,52},{12,27}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>12 27 0 27 0 0 12 0</string>
+                <key>verticesUV</key>
+                <string>52 79 40 79 40 52 52 52</string>
+            </dict>
+            <key>Abigail_walk_down_1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{14,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{14,26}</string>
+                <key>textureRect</key>
+                <string>{{0,27},{14,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>14 26 0 26 0 0 14 0</string>
+                <key>verticesUV</key>
+                <string>14 53 0 53 0 27 14 27</string>
+            </dict>
+            <key>Abigail_walk_down_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{14,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{14,26}</string>
+                <key>textureRect</key>
+                <string>{{14,0},{14,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>14 26 0 26 0 0 14 0</string>
+                <key>verticesUV</key>
+                <string>28 26 14 26 14 0 28 0</string>
+            </dict>
+            <key>Abigail_walk_left_1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{27,52},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 26 0 26 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>40 78 27 78 27 52 40 52</string>
+            </dict>
+            <key>Abigail_walk_left_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{40,26},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 26 0 26 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>53 52 40 52 40 26 53 26</string>
+            </dict>
+            <key>Abigail_walk_right_1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{41,0},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 26 0 26 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>54 26 41 26 41 0 54 0</string>
+            </dict>
+            <key>Abigail_walk_right_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{27,26},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 26 0 26 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>40 52 27 52 27 26 40 26</string>
+            </dict>
+            <key>Abigail_walk_up_1.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{13,53},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>1 2 3 0 1 3</string>
+                <key>vertices</key>
+                <string>13 26 0 26 0 0 13 0</string>
+                <key>verticesUV</key>
+                <string>26 79 13 79 13 53 26 53</string>
+            </dict>
+            <key>Abigail_walk_up_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{13,26}</string>
+                <key>spriteSourceSize</key>
+                <string>{13,26}</string>
+                <key>textureRect</key>
+                <string>{{28,0},{13,26}}</string>
+                <key>textureRotated</key>
+                <false/>
+                <key>triangles</key>
+                <string>0 3 4 0 1 2 0 2 3</string>
+                <key>vertices</key>
+                <string>13 4 13 26 0 26 0 0 9 0</string>
+                <key>verticesUV</key>
+                <string>41 4 41 26 28 26 28 0 37 0</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>3</integer>
+            <key>pixelFormat</key>
+            <string>RGBA8888</string>
+            <key>premultiplyAlpha</key>
+            <false/>
+            <key>realTextureFileName</key>
+            <string>Abigail.png</string>
+            <key>size</key>
+            <string>{54,80}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:c1d7661d0199098175512f2e9f7cb542:7bbeff34250432da5a12332ed72d3b70:0b963253ce0a31a5f30da62ec95d501e$</string>
+            <key>textureFileName</key>
+            <string>Abigail.png</string>
+        </dict>
+    </dict>
+</plist>

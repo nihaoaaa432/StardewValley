@@ -1,7 +1,29 @@
 #include "Player.h"
-#include "InventoryLayer.h"
+#include "layer/InventoryLayer.h"
+
+//#define ENABLE_ANIMATIONS
 
 USING_NS_CC;
+
+Player* Player::_instance = nullptr;
+
+Player* Player::getInstance()
+{
+    if (_instance == nullptr)
+    {
+        _instance = Player::createWithAttributes("Abigail.png", "Abigail");
+    }
+    return _instance;
+}
+
+void Player::destroyInstance()
+{
+    if (_instance != nullptr)
+    {
+        _instance->release();
+        _instance = nullptr;
+    }
+}
 
 Player* Player::createWithAttributes(const std::string& imagePath,const std::string& name) {
     Player* player = new(std::nothrow) Player();
@@ -19,31 +41,27 @@ bool Player::initWithAttributes(const std::string& imagePath,const std::string&n
     }
 
     //注册键盘事件
-    registerKeyboardEvent();
+    //registerKeyboardEvent();
 
-    // 每 0.1 秒调用一次 update 方法
+    //// 每 0.1 秒调用一次 update 方法
     //schedule([this](float delta) {
-      //  this->update(delta);
-      //  }, 0.1f, "player_update_key");
+    //    this->update(delta);
+    //   }, 0.1f, "player_update_key");
+    // 每帧更新
+    /*this->schedule([=](float deltaTime) {
+        update(deltaTime);
+        }, "update_key");*/
 
     isMoving = false;
     isInventoryOpen = false;
     moveDirection = Vec2::ZERO;
     speed = INIT_PLAYER_SPEED;
 
+#ifdef ENABLE_ANIMATIONS
     loadAnimations();
-
-   move(Vec2(0, 1));
-   move(Vec2(0, 1));
-   move(Vec2(0, 1));
-   stopMoving();
-   move(Vec2(1, 0));
-   move(Vec2(-1, 0));
-   move(Vec2(0, -1));
-   //playWalkAnimation("up");
-
-    //设置初始站立动画
-    //playIdleAnimation("down");
+#endif
+   //move(Vec2(0, 1));
+   // playWalkAnimation("up");
 
     return true;
 }
@@ -87,71 +105,71 @@ Animate* Player::createIdleAnimation(const std::string& direction)
     return Animate::create(animation);
 }
 
-void Player::onEnter()
-{
-    Changers::onEnter();
-    //确保监听器在场景进入时注册
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-}
-
-void Player::onExit()
-{
-    //退出时注销键盘监听器
-    _eventDispatcher->removeEventListener(keyboardListener);
-    Changers::onExit();
-}
-
-//注册键盘事件
-void Player::registerKeyboardEvent() {
-    // 创建键盘事件监听器
-    keyboardListener = EventListenerKeyboard::create();
-
-    // 定义按键按下的回调
-    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event) {
-        if (isInventoryOpen) {
-            if (keyCode == EventKeyboard::KeyCode::KEY_B) {
-                closeInventory();  // 关闭背包
-            }
-            return;  // 背包打开时，其他按键不响应
-        }
-
-        if (isMoving) {
-            return;
-        }
-
-        // 按下控制移动的按键时
-        switch (keyCode) {
-        case EventKeyboard::KeyCode::KEY_A:
-            move(cocos2d::Vec2(-1, 0)); // 向左移动
-            break;
-        case EventKeyboard::KeyCode::KEY_D:
-            move(cocos2d::Vec2(1, 0)); // 向右移动
-            break;
-        case EventKeyboard::KeyCode::KEY_W:
-            move(cocos2d::Vec2(0, 1)); // 向上移动
-            break;
-        case EventKeyboard::KeyCode::KEY_S:
-            move(cocos2d::Vec2(0, -1)); // 向下移动
-            break;
-        case EventKeyboard::KeyCode::KEY_B:
-            openInventory();  // 打开背包
-            break;
-        default:
-            break;
-        }
-        };
-
-    // 定义按键松开的回调
-    keyboardListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event* event) {
-        if (keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_D ||
-            keyCode == EventKeyboard::KeyCode::KEY_W || keyCode == EventKeyboard::KeyCode::KEY_S) {
-            stopMoving();
-        }
-        };
-}
+//void Player::onEnter()
+//{
+//    Changers::onEnter();
+//    //确保监听器在场景进入时注册
+//    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+//}
+//
+//void Player::onExit()
+//{
+//    //退出时注销键盘监听器
+//    _eventDispatcher->removeEventListener(keyboardListener);
+//    Changers::onExit();
+//}
+//
+////注册键盘事件
+//void Player::registerKeyboardEvent() {
+//    // 创建键盘事件监听器
+//    keyboardListener = EventListenerKeyboard::create();
+//
+//    // 定义按键按下的回调
+//    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event) {
+//        if (isInventoryOpen) {
+//            if (keyCode == EventKeyboard::KeyCode::KEY_B) {
+//                closeInventory();  // 关闭背包
+//            }
+//            return;  // 背包打开时，其他按键不响应
+//        }
+//
+//        if (isMoving) {
+//            return;
+//        }
+//
+//        // 按下控制移动的按键时
+//        switch (keyCode) {
+//        case EventKeyboard::KeyCode::KEY_A:
+//            moveInDirection(cocos2d::Vec2(-1, 0)); // 向左移动
+//            break;
+//        case EventKeyboard::KeyCode::KEY_D:
+//            move(cocos2d::Vec2(1, 0)); // 向右移动
+//            break;
+//        case EventKeyboard::KeyCode::KEY_W:
+//            moveInDirection(cocos2d::Vec2(0, 1)); // 向上移动
+//            break;
+//        case EventKeyboard::KeyCode::KEY_S:
+//            moveInDirection(cocos2d::Vec2(0, -1)); // 向下移动
+//            break;
+//        case EventKeyboard::KeyCode::KEY_B:
+//            openInventory();  // 打开背包
+//            break;
+//        default:
+//            break;
+//        }
+//        };
+//
+//    // 定义按键松开的回调
+//    keyboardListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event* event) {
+//        if (keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_D ||
+//            keyCode == EventKeyboard::KeyCode::KEY_W || keyCode == EventKeyboard::KeyCode::KEY_S) {
+//            stopMoving();
+//        }
+//        };
+//}
 
 // 统一的移动方法
-void Player::move(const cocos2d::Vec2& direction) {
+void Player::moveInDirection(const cocos2d::Vec2& direction) {
         moveDirection = direction;
         isMoving = true;
 
@@ -170,14 +188,17 @@ void Player::move(const cocos2d::Vec2& direction) {
         }
 
         //播放行走动画
+#ifdef ENABLE_ANIMATIONS
         playWalkAnimation(lastDirection);
+#endif
 
         //// 计算目标位置
-        //auto targetPosition = Changers::sprite->getPosition() + moveDirection * speed*0.02f; // 0.02f是每帧时间的单位
+        auto targetPosition = this->getPosition() + moveDirection * speed*0.02f; // 0.02f是每帧时间的单位
 
         //// 创建移动动画（使用 MoveTo）
         //auto moveAction = cocos2d::MoveTo::create(0.2f, targetPosition); // 0.2秒移动到目标位置
-        //Changers::sprite->runAction(moveAction); // 执行动作
+        //this->runAction(moveAction); // 执行动作
+        this->setPosition(targetPosition);
 }
 
 // 停止移动（通过调用动作的停止来停止移动）
@@ -187,7 +208,9 @@ void Player::stopMoving() {
 
     //停止动画并设置站立帧
     //stopAnimation();
+#ifdef ENABLE_ANIMATIONS
     playIdleAnimation(lastDirection);
+#endif
 }
 
 // 播放行走动画
@@ -210,7 +233,6 @@ void Player::playWalkAnimation(const std::string& direction) {
     }
     //}
 }
-
 
 // 播放站立帧
 void Player::playIdleAnimation(const std::string& direction) {
@@ -245,14 +267,14 @@ void Player::openInventory() {
         //监听背包的关闭事件
     }
 }
-
-void Player::update(float delta)
-{
-    if (isMoving)
-    {
-       // playWalkAnimation(lastDirection);
-    }
-}
+//
+//void Player::update(float delta)
+//{
+//    if (isMoving)
+//    {
+//        this->moveInDirection(moveDirection);
+//    }
+//}
 
 void Player::closeInventory() {
     if (isInventoryOpen) {
@@ -278,4 +300,9 @@ void Player::stopAnimation() {
         Changers::currentAction = nullptr;
     }
  
+}
+
+Vec2& Player::getMoveDirection()
+{
+    return moveDirection;
 }
