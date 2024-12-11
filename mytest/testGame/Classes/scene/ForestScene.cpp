@@ -1,31 +1,35 @@
+#include "ForestScene.h"
 #include "TownScene.h"
-#include "MapScene.h"
-TownScene* TownScene::_instance = nullptr;
 
-//调整玩家位置
-void TownScene::setPlayerPosition(cocos2d::Vec2& position) {
-    this->player->setPosition(position.x, position.y);
+ForestScene* ForestScene::_instance = nullptr;
+// 调整镜头高度的函数
+void ForestScene::setCameraHeight(float height) {
+    auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
+    if (camera) {
+        // 获取当前摄像机的位置
+        cocos2d::Vec3 cameraPos = camera->getPosition3D();
+
+        // 设置新的高度
+        cameraPos.z = height;
+        camera->setPosition3D(cameraPos);
+    }
+}
+cocos2d::Scene* ForestScene::createScene() {
+    return ForestScene::create();
 }
 
-cocos2d::Scene* TownScene::createScene() {
-    return TownScene::create();
-}
-
-bool TownScene::init() {
+bool ForestScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
     // 加载地图
-    map = cocos2d::TMXTiledMap::create("town/town.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为左下角
+    map = cocos2d::TMXTiledMap::create("forest/forest.tmx");
+    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
+    setCameraHeight(100.0f);
 
-    // 创建角色精灵
-    player = cocos2d::Sprite::create("sand.png");
-    player->setPosition(cocos2d::Vec2(0, FROM_TOWN_TO_FARM_Y));  // 初始位置
-    this->addChild(player);
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
@@ -36,10 +40,19 @@ bool TownScene::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
+
+    // 设置镜头初始高度
+    setCameraHeight(100.0f);  // 根据需要调整这个值
+
+    // 创建角色精灵
+    player = cocos2d::Sprite::create("sand.png");
+    player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
+    this->addChild(player);
+
     // 键盘事件监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(TownScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(TownScene::onKeyReleased, this);
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(ForestScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(ForestScene::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 每帧更新
@@ -50,7 +63,7 @@ bool TownScene::init() {
     return true;
 }
 
-void TownScene::update(float deltaTime) {
+void ForestScene::update(float deltaTime) {
     if (moveDirection != cocos2d::Vec2::ZERO) {
         cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
         if (canMoveToPosition(newPosition)) {
@@ -63,7 +76,7 @@ void TownScene::update(float deltaTime) {
     updateCameraPosition();
 }
 
-void TownScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void ForestScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_W:
         moveDirection = cocos2d::Vec2(0, 1);  // 向上
@@ -91,7 +104,13 @@ void TownScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 
 }
 
-void TownScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+void ForestScene::onBKeyPressed() {
+    // 处理 "B" 键被按下的逻辑
+    inventoryLayer->setVisible(!inventoryLayer->isVisible());
+
+}
+
+void ForestScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
@@ -99,13 +118,8 @@ void TownScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
         moveDirection = cocos2d::Vec2::ZERO;  // 停止移动
     }
 }
-void TownScene::onBKeyPressed() {
-    // 处理 "B" 键被按下的逻辑
-    inventoryLayer->setVisible(!inventoryLayer->isVisible());
 
-}
-
-bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
+bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -123,9 +137,9 @@ bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
         if (!walkable) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
-            // 不知为何要乘1.25
-            float x = objMap["x"].asFloat() ;
-            float y = objMap["y"].asFloat();
+            // 不知为何要乘RATIO
+            float x = objMap["x"].asFloat() - SIZE_FARM_X / 2 * 16 * RATIO;
+            float y = objMap["y"].asFloat() - SIZE_FARM_Y / 2 * 16 * RATIO;
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
@@ -133,7 +147,7 @@ bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
             cocos2d::Rect objRect(x, y, width, height);
 
             // 如果目标位置在不可行走的区域内，则返回 false
-            if (objRect.containsPoint(position)) {
+            if (!walkable && objRect.containsPoint(position)) {
                 return false;
             }
         }
@@ -142,24 +156,23 @@ bool TownScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
+// 检查玩家是否到达触发地图切换的区域
+void ForestScene::checkMapSwitch(const cocos2d::Vec2& position) {
+
+    if (position.x > FROM_FARM_TO_TOWN) {
+        // 玩家到达了触发区域，切换到新的地图
+        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
+    }
+}
 
 
 // 镜头跟随角色的函数
-void TownScene::updateCameraPosition() {
+void ForestScene::updateCameraPosition() {
     // 获取摄像机
     auto director = cocos2d::Director::getInstance();
     auto camera = director->getRunningScene()->getDefaultCamera();
     if (camera) {
         // 设置摄像机的位置，确保角色始终位于屏幕中央
         camera->setPosition(player->getPosition());
-    }
-}
-// 检查玩家是否到达触发地图切换的区域
-void TownScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    if (position.x < FROM_TOWN_TO_FARM_X) {
-        auto mapScene = MapScene::getInstance();
-        mapScene->setPlayerPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X -16, FROM_FARM_TO_TOWN_Y));
-        moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
-        cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
     }
 }
