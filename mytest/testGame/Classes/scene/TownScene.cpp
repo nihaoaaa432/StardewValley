@@ -1,11 +1,8 @@
 #include "TownScene.h"
 #include "MapScene.h"
+#include "character/Player.h"
 TownScene* TownScene::_instance = nullptr;
 
-//调整玩家位置
-void TownScene::setPlayerPosition(cocos2d::Vec2& position) {
-    this->player->setPosition(position.x, position.y);
-}
 
 cocos2d::Scene* TownScene::createScene() {
     return TownScene::create();
@@ -22,10 +19,9 @@ bool TownScene::init() {
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
 
-    // 创建角色精灵
-    player = cocos2d::Sprite::create("sand.png");
-    player->setPosition(cocos2d::Vec2(0, FROM_TOWN_TO_FARM_Y));  // 初始位置
-    this->addChild(player);
+    //// 创建角色精灵
+    //Player::getInstance()->setPosition(cocos2d::Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
+    //this->addChild(Player::getInstance());
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
@@ -52,12 +48,12 @@ bool TownScene::init() {
 
 void TownScene::update(float deltaTime) {
     if (moveDirection != cocos2d::Vec2::ZERO) {
-        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
+        cocos2d::Vec2 newPosition = Player::getInstance()->getPosition() + moveDirection * Player::getInstance()->getSpeed() * deltaTime;
         if (canMoveToPosition(newPosition)) {
-            player->setPosition(newPosition);  // 只有可以移动时才更新位置
+            Player::getInstance()->setPosition(newPosition);  // 只有可以移动时才更新位置
         }
     }
-    checkMapSwitch(player->getPosition());
+    checkMapSwitch(Player::getInstance()->getPosition());
 
     // 更新镜头位置，确保镜头跟随角色
     updateCameraPosition();
@@ -151,15 +147,43 @@ void TownScene::updateCameraPosition() {
     auto camera = director->getRunningScene()->getDefaultCamera();
     if (camera) {
         // 设置摄像机的位置，确保角色始终位于屏幕中央
-        camera->setPosition(player->getPosition());
+        camera->setPosition(Player::getInstance()->getPosition());
     }
 }
+
+void TownScene::goToNextScene() {
+    // 1. 获取当前场景
+    auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
+    auto player = Player::getInstance();
+
+    // 2. 从当前场景移除角色
+    if (currentScene && player->getParent() == currentScene) {
+        player->removeFromParent();
+    }
+
+    // 3. 创建新场景
+    auto newScene = MapScene::getInstance();
+
+    // 4. 初始化角色在新场景中的状态
+    player->setPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X - 16, FROM_FARM_TO_TOWN_Y)); // 设置角色位置
+    player->setScale(1.0f); // 设置角色缩放比例
+
+    // 5. 将角色添加到新场景
+    newScene->addChild(player);
+
+    // 6. 切换到新场景
+    cocos2d::Director::getInstance()->replaceScene(newScene);
+}
+
+
 // 检查玩家是否到达触发地图切换的区域
 void TownScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    if (position.x < FROM_TOWN_TO_FARM_X) {
-        auto mapScene = MapScene::getInstance();
-        mapScene->setPlayerPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X -16, FROM_FARM_TO_TOWN_Y));
-        moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
-        cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
+    if (position.x < FROM_TOWN_TO_FARM_X&&position.y>FROM_TOWN_TO_FARM_Y_UP -16&&position.y< FROM_TOWN_TO_FARM_Y_UP+16) {
+        goToNextScene();
+        //auto mapScene = MapScene::getInstance();
+        //Player::getInstance()->setPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X - 16, FROM_FARM_TO_TOWN_Y));
+        //moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
+        //cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
     }
+    
 }

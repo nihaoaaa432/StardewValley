@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
+#include "character/Player.h"
 USING_NS_CC;
 std::string playerName = "";
 Scene* HelloWorld::createScene()
@@ -119,6 +120,10 @@ bool HelloWorld::init()
 
             playerName = nickname;
             auto mapScene = MapScene::getInstance();
+            auto player = Player::getInstance();
+            player->setPosition(0, 0);
+            mapScene->addChild(Player::getInstance());
+
             cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
         }
         });

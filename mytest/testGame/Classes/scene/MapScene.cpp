@@ -1,12 +1,9 @@
 #include "MapScene.h"
 #include "TownScene.h"
+#include "character/Player.h"
 
 MapScene* MapScene::_instance = nullptr;
 
-//调整玩家位置
-void MapScene::setPlayerPosition(cocos2d::Vec2& position) {
-    this->player->setPosition(position.x, position.y);
-}
 // 调整镜头高度的函数
 void MapScene::setCameraHeight(float height) {
     auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
@@ -52,6 +49,10 @@ bool MapScene::init() {
     player = Player::getInstance();
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
+    //player = Player::createWithAttributes("Abigail.png", "Abigail");
+    //player = cocos2d::Sprite::create("sand.png");
+    //Player::getInstance()->setPosition(cocos2d::Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
+    //this->addChild(Player::getInstance());
 
     //创建一棵树
     tree = Tree::create();
@@ -75,13 +76,14 @@ bool MapScene::init() {
 
 void MapScene::update(float deltaTime) {
     if (moveDirection != cocos2d::Vec2::ZERO) {
-        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
+        float speed = Player::getInstance()->getSpeed();
+        cocos2d::Vec2 newPosition = Player::getInstance()->getPosition() + moveDirection * speed * deltaTime;
         if (canMoveToPosition(newPosition)) {
-            player->moveInDirection(moveDirection);  // 只有可以移动时才更新位置
+            Player::getInstance()->moveInDirection(moveDirection);  // 只有可以移动时才更新位置
             //player->setPosition(newPosition);
         }
     }
-    checkMapSwitch(player->getPosition());
+    checkMapSwitch(Player::getInstance()->getPosition());
 
     // 更新镜头位置，确保镜头跟随角色
     updateCameraPosition();
@@ -129,7 +131,7 @@ void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
         keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
         moveDirection = cocos2d::Vec2::ZERO;
-        player->stopMoving(); // 停止移动
+        Player::getInstance()->stopMoving(); // 停止移动
     }
 }
 
@@ -171,13 +173,43 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     return true;
 }
 
+void MapScene::goToNextScene() {
+    // 1. 获取当前场景
+    auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
+    auto player = Player::getInstance();
+
+    // 2. 从当前场景移除角色
+    if (currentScene && player->getParent() == currentScene) {
+        player->removeFromParent();
+    }
+
+    // 3. 创建新场景
+    auto newScene = TownScene::getInstance();
+
+    // 4. 初始化角色在新场景中的状态
+    player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP)); // 设置角色位置
+    player->setScale(1.0f); // 设置角色缩放比例
+
+    // 5. 将角色添加到新场景
+    newScene->addChild(player);
+
+    // 6. 切换到新场景
+    cocos2d::Director::getInstance()->replaceScene(newScene);
+}
+
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
-        auto townScene = TownScene::getInstance();
-        townScene->setPlayerPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X+16, FROM_TOWN_TO_FARM_Y));
-        moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
-        cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
+        //Player::getInstance()->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP));
+        //moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
+        //cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
+        goToNextScene();
     }
+    //else if (position.y < FROM_FARM_TO_FOREST_Y) {
+    //    auto forestScene = ForestScene::getInstance();
+    //    Player::getInstance()->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP));
+    //    moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
+    //    cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, ForestScene::getInstance(), cocos2d::Color3B::WHITE));
+    //}
 }
 
 // 镜头跟随角色的函数
@@ -187,6 +219,6 @@ void MapScene::updateCameraPosition() {
     auto camera = director->getRunningScene()->getDefaultCamera();
     if (camera) {
         // 设置摄像机的位置，确保角色始终位于屏幕中央
-        camera->setPosition(player->getPosition());
+        camera->setPosition(Player::getInstance()->getPosition());
     }
 }

@@ -8,7 +8,7 @@
 //玩家初始化数据
 #define INIT_PLAYER_HEALTH  100
 #define INIT_PLAYER_MONEY  0
-#define INIT_PLAYER_SPEED 100.0f
+#define INIT_PLAYER_SPEED 500.0f
 
 //继承自Character的Player类
 class Player :public Changers {
@@ -51,6 +51,8 @@ public:
 	void playIdleAnimation(const std::string& direciton);//站立
 
 	void stopAnimation();
+
+	float getSpeed();
 
 	cocos2d::Vec2& getMoveDirection();//获取移动方向
 
