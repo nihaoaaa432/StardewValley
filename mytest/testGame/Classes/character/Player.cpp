@@ -7,6 +7,10 @@ USING_NS_CC;
 
 Player* Player::_instance = nullptr;
 
+float Player::getSpeed() {
+    return speed;
+}
+
 Player* Player::getInstance()
 {
     if (_instance == nullptr)
@@ -28,11 +32,14 @@ void Player::destroyInstance()
 Player* Player::createWithAttributes(const std::string& imagePath,const std::string& name) {
     Player* player = new(std::nothrow) Player();
     if (player && player->initWithAttributes(imagePath,name)) {
-        player->autorelease();
+       // player->autorelease();
         return player;
     }
-    delete player;
-    return nullptr;
+    else {
+        delete player;
+        player = nullptr;
+        return nullptr;
+    }
 }
 
 bool Player::initWithAttributes(const std::string& imagePath,const std::string&name) {
