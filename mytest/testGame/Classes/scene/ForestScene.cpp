@@ -1,19 +1,32 @@
 #include "ForestScene.h"
 #include "TownScene.h"
+#include "character/Player.h"
 
 ForestScene* ForestScene::_instance = nullptr;
-// 调整镜头高度的函数
-void ForestScene::setCameraHeight(float height) {
-    auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
-    if (camera) {
-        // 获取当前摄像机的位置
-        cocos2d::Vec3 cameraPos = camera->getPosition3D();
-
-        // 设置新的高度
-        cameraPos.z = height;
-        camera->setPosition3D(cameraPos);
+ForestScene* ForestScene:: getInstance() {
+    if (!_instance) {
+        ForestScene* pRet = new(std::nothrow) ForestScene();
+        if (pRet && pRet->init())
+        {
+            return pRet;
+        }
+        else
+        {
+            delete pRet;
+            pRet = nullptr;
+            return nullptr;
+        }
     }
+    return _instance;
 }
+void ForestScene::destroyInstance() {
+    if (_instance) {
+        _instance->release();
+        _instance = nullptr;
+    }
+
+}
+
 cocos2d::Scene* ForestScene::createScene() {
     return ForestScene::create();
 }
@@ -25,7 +38,7 @@ bool ForestScene::init() {
 
     // 加载地图
     map = cocos2d::TMXTiledMap::create("forest/forest.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
+    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
     setCameraHeight(100.0f);
@@ -44,11 +57,6 @@ bool ForestScene::init() {
     // 设置镜头初始高度
     setCameraHeight(100.0f);  // 根据需要调整这个值
 
-    // 创建角色精灵
-    player = cocos2d::Sprite::create("sand.png");
-    player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
-    this->addChild(player);
-
     // 键盘事件监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
     keyboardListener->onKeyPressed = CC_CALLBACK_2(ForestScene::onKeyPressed, this);
@@ -63,63 +71,9 @@ bool ForestScene::init() {
     return true;
 }
 
-void ForestScene::update(float deltaTime) {
-    if (moveDirection != cocos2d::Vec2::ZERO) {
-        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
-        if (canMoveToPosition(newPosition)) {
-            player->setPosition(newPosition);  // 只有可以移动时才更新位置
-        }
-    }
-    checkMapSwitch(player->getPosition());
-
-    // 更新镜头位置，确保镜头跟随角色
-    updateCameraPosition();
-}
-
-void ForestScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    switch (keyCode) {
-    case cocos2d::EventKeyboard::KeyCode::KEY_W:
-        moveDirection = cocos2d::Vec2(0, 1);  // 向上
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_S:
-        moveDirection = cocos2d::Vec2(0, -1); // 向下
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_A:
-        moveDirection = cocos2d::Vec2(-1, 0); // 向左
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_D:
-        moveDirection = cocos2d::Vec2(1, 0);  // 向右
-        break;
-
-    default:
-        break;
-    }
-    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
-        onBKeyPressed();
-    }
-    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
-        stoppingLayer->setVisible(!stoppingLayer->isVisible());
-    }
-
-
-}
-
-void ForestScene::onBKeyPressed() {
-    // 处理 "B" 键被按下的逻辑
-    inventoryLayer->setVisible(!inventoryLayer->isVisible());
-
-}
-
-void ForestScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
-        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
-        moveDirection = cocos2d::Vec2::ZERO;  // 停止移动
-    }
-}
 
 bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
+    // 获取名为 "walk" 的对象层
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -137,9 +91,9 @@ bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
         if (!walkable) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
-            // 不知为何要乘RATIO
-            float x = objMap["x"].asFloat() - SIZE_FARM_X / 2 * 16 * RATIO;
-            float y = objMap["y"].asFloat() - SIZE_FARM_Y / 2 * 16 * RATIO;
+            // 不知为何要乘1.25
+            float x = objMap["x"].asFloat();
+            float y = objMap["y"].asFloat();
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
@@ -147,7 +101,7 @@ bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
             cocos2d::Rect objRect(x, y, width, height);
 
             // 如果目标位置在不可行走的区域内，则返回 false
-            if (!walkable && objRect.containsPoint(position)) {
+            if (objRect.containsPoint(position)) {
                 return false;
             }
         }
@@ -156,23 +110,37 @@ bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 如果不在任何不可行走区域内，则允许移动
     return true;
 }
+void ForestScene::goToNextScene() {
+    // 1. 获取当前场景
+    auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
+    auto player = Player::getInstance();
+
+    // 2. 从当前场景移除角色
+    if (currentScene && player->getParent() == currentScene) {
+        player->removeFromParent();
+    }
+
+    // 3. 创建新场景
+    auto newScene = ForestScene::getInstance();
+
+    // 4. 初始化角色在新场景中的状态
+    player->setPosition(cocos2d::Vec2(0, 0)); // 设置角色位置
+    player->setScale(1.0f); // 设置角色缩放比例
+
+    // 5. 将角色添加到新场景
+    newScene->addChild(player);
+
+    // 6. 切换到新场景
+    cocos2d::Director::getInstance()->replaceScene(newScene);
+}
+
 // 检查玩家是否到达触发地图切换的区域
 void ForestScene::checkMapSwitch(const cocos2d::Vec2& position) {
 
     if (position.x > FROM_FARM_TO_TOWN) {
         // 玩家到达了触发区域，切换到新的地图
-        cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, TownScene::createScene(), cocos2d::Color3B::WHITE));
+        goToNextScene();
     }
 }
 
 
-// 镜头跟随角色的函数
-void ForestScene::updateCameraPosition() {
-    // 获取摄像机
-    auto director = cocos2d::Director::getInstance();
-    auto camera = director->getRunningScene()->getDefaultCamera();
-    if (camera) {
-        // 设置摄像机的位置，确保角色始终位于屏幕中央
-        camera->setPosition(player->getPosition());
-    }
-}

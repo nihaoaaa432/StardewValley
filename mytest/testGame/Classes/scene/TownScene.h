@@ -16,30 +16,10 @@ public:
     CREATE_FUNC(TownScene);
 
     // 获取单例实例
-    static TownScene* getInstance() {
-        if (!_instance) {
-            TownScene* pRet = new(std::nothrow) TownScene(); 
-                if (pRet && pRet->init()) 
-                { 
-                    return pRet; 
-                } 
-                else 
-                { 
-                    delete pRet;
-                    pRet = nullptr; 
-                    return nullptr; 
-                } 
-        }
-        return _instance;
-    }
+    static TownScene* getInstance();
 
     // 销毁单例实例
-    static void destroyInstance() {
-        if (_instance) {
-            _instance->release();
-            _instance = nullptr;
-        }
-    }
+static void destroyInstance();
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
