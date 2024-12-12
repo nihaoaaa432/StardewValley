@@ -3,6 +3,30 @@
 #include "character/Player.h"
 TownScene* TownScene::_instance = nullptr;
 
+// 获取单例实例
+TownScene* TownScene::getInstance() {
+    if (!_instance) {
+        TownScene* pRet = new(std::nothrow) TownScene();
+        if (pRet && pRet->init())
+        {
+            return pRet;
+        }
+        else
+        {
+            delete pRet;
+            pRet = nullptr;
+            return nullptr;
+        }
+    }
+    return _instance;
+}
+// 销毁单例实例
+void TownScene:: destroyInstance() {
+    if (_instance) {
+        _instance->release();
+        _instance = nullptr;
+    }
+}
 
 cocos2d::Scene* TownScene::createScene() {
     return TownScene::create();
