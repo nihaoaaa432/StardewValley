@@ -48,6 +48,12 @@
     <ClCompile Include="..\Classes\character\Player.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\character\Crops.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Tree.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -81,6 +87,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\character\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Crops.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Tree.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

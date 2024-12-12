@@ -49,11 +49,15 @@ bool MapScene::init() {
     setCameraHeight(50.0f);  // 根据需要调整这个值
 
     // 创建角色精灵
-    //player = Player::createWithAttributes("Abigail.png", "Abigail");
     player = Player::getInstance();
-    //player = cocos2d::Sprite::create("sand.png");
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
+
+    //创建一棵树
+    tree = Tree::create();
+    tree->setPosition(cocos2d::Vec2(-100, -100));
+    this->addChild(tree);
+
 
     // 键盘事件监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
@@ -87,6 +91,8 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_W:
         moveDirection = cocos2d::Vec2(0, 1);  // 向上
+       // tree->death();
+        //tree->growthStage1();
         break;
     case cocos2d::EventKeyboard::KeyCode::KEY_S:
         moveDirection = cocos2d::Vec2(0, -1); // 向下

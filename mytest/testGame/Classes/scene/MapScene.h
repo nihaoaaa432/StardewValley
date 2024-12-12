@@ -3,6 +3,7 @@
 #include "layer/inventoryLayer.h" 
 #include"layer/StoppingLayer.h"
 #include "character/Player.h"
+#include "character/Tree.h"
 
 #define RATIO 1.25f
 #define FROM_FARM_TO_TOWN_X 16 * 25 * RATIO
@@ -40,6 +41,7 @@ private:
 
     InventoryLayer* inventoryLayer; //背包界面层
     StoppingLayer* stoppingLayer;    // 暂停界面层
+    Tree* tree;
 
     void onBKeyPressed();
 
