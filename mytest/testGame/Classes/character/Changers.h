@@ -10,7 +10,7 @@ protected:
     cocos2d::Label* nameLabel;//名称显示
     cocos2d::Animate* currentAnimation;//当前动画
     cocos2d::Action* currentAction;//当前动作
-    std::map<std::string, cocos2d::Animate*> walkAnimations;//存储动画
+    std::map<std::string, cocos2d::Animate*> Animations;//存储动画
 
 public:
     static Changers* createWithAttributes(const std::string& atlas, const std::string& name);

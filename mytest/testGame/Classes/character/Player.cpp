@@ -15,7 +15,7 @@ Player* Player::getInstance()
 {
     if (_instance == nullptr)
     {
-        _instance = Player::createWithAttributes("Abigail.png", "Abigail");
+        _instance = Player::createWithAttributes("Abigail.plist", "Abigail");
     }
     return _instance;
 }
@@ -76,16 +76,16 @@ bool Player::initWithAttributes(const std::string& imagePath,const std::string&n
 void Player::loadAnimations()
 {
     //加载站立动画
-    Changers::walkAnimations["stand_up"] = createIdleAnimation("up");
-    Changers::walkAnimations["stand_down"] = createIdleAnimation("down");
-    Changers::walkAnimations["stand_left"] = createIdleAnimation("left");
-    Changers::walkAnimations["stand_right"] = createIdleAnimation("right");
+    Changers::Animations["stand_up"] = createIdleAnimation("up");
+    Changers::Animations["stand_down"] = createIdleAnimation("down");
+    Changers::Animations["stand_left"] = createIdleAnimation("left");
+    Changers::Animations["stand_right"] = createIdleAnimation("right");
 
     // 加载行走动画
-    Changers::walkAnimations["walk_up"] = createWalkAnimation("up");
-    Changers::walkAnimations["walk_down"] = createWalkAnimation("down");
-    Changers::walkAnimations["walk_left"] = createWalkAnimation("left");
-    Changers::walkAnimations["walk_right"] = createWalkAnimation("right");
+    Changers::Animations["walk_up"] = createWalkAnimation("up");
+    Changers::Animations["walk_down"] = createWalkAnimation("down");
+    Changers::Animations["walk_left"] = createWalkAnimation("left");
+    Changers::Animations["walk_right"] = createWalkAnimation("right");
 }
 
 //创建行走动画
@@ -227,8 +227,8 @@ void Player::playWalkAnimation(const std::string& direction) {
     auto animation = "walk_" + direction;
 
     // 播放缓存的行走动画
-    if (Changers::walkAnimations.find(animation) != Changers::walkAnimations.end()) {
-        Changers::currentAnimation = Changers::walkAnimations[animation];
+    if (Changers::Animations.find(animation) != Changers::Animations.end()) {
+        Changers::currentAnimation = Changers::Animations[animation];
         // sprite->runAction(RepeatForever::create(Changers::currentAnimation));
 
         //创建RepeatForever动作
@@ -251,8 +251,8 @@ void Player::playIdleAnimation(const std::string& direction) {
     auto animation = "stand_" + direction;
     
     // 播放缓存的站立动画
-    if (Changers::walkAnimations.find(animation) != Changers::walkAnimations.end()) {
-        Changers::currentAnimation = Changers::walkAnimations[animation];
+    if (Changers::Animations.find(animation) != Changers::Animations.end()) {
+        Changers::currentAnimation = Changers::Animations[animation];
 
         // 创建 RepeatForever 动作
         Changers::currentAction = RepeatForever::create(Changers::currentAnimation);

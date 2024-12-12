@@ -4,200 +4,170 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>Abigail_stand_down.png</key>
+            <key>Tree_die_1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{14,27}</string>
+                <string>{94,127}</string>
                 <key>spriteSourceSize</key>
-                <string>{14,27}</string>
+                <string>{94,127}</string>
                 <key>textureRect</key>
-                <string>{{1,1},{14,27}}</string>
+                <string>{{1,1},{94,127}}</string>
+                <key>textureRotated</key>
+                <true/>
+            </dict>
+            <key>Tree_die_2.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{75,61}</string>
+                <key>spriteSourceSize</key>
+                <string>{75,61}</string>
+                <key>textureRect</key>
+                <string>{{1,231},{75,61}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>Abigail_stand_left.png</key>
+            <key>Tree_die_3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,27}</string>
+                <string>{60,56}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,27}</string>
+                <string>{60,60}</string>
                 <key>textureRect</key>
-                <string>{{17,1},{13,27}}</string>
+                <string>{{78,231},{60,56}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_stand_right.png</key>
+            <key>Tree_grow_1.1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,27}</string>
+                <string>{45,73}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,27}</string>
+                <string>{45,73}</string>
                 <key>textureRect</key>
-                <string>{{32,1},{13,27}}</string>
+                <string>{{92,172},{45,73}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_stand_up.png</key>
+            <key>Tree_grow_1.2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{12,27}</string>
+                <string>{50,117}</string>
                 <key>spriteSourceSize</key>
-                <string>{12,27}</string>
+                <string>{50,117}</string>
                 <key>textureRect</key>
-                <string>{{47,1},{12,27}}</string>
+                <string>{{121,120},{50,117}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_down_1.png</key>
+            <key>Tree_grow_1.3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{14,26}</string>
+                <string>{50,118}</string>
                 <key>spriteSourceSize</key>
-                <string>{14,26}</string>
+                <string>{50,118}</string>
                 <key>textureRect</key>
-                <string>{{61,1},{14,26}}</string>
+                <string>{{1,97},{50,118}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_down_2.png</key>
+            <key>Tree_grow_2.1.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{14,26}</string>
+                <string>{65,95}</string>
                 <key>spriteSourceSize</key>
-                <string>{14,26}</string>
+                <string>{65,95}</string>
                 <key>textureRect</key>
-                <string>{{77,1},{14,26}}</string>
+                <string>{{130,53},{65,95}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_left_1.png</key>
+            <key>Tree_grow_2.2.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,26}</string>
+                <string>{75,87}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,26}</string>
+                <string>{75,87}</string>
                 <key>textureRect</key>
-                <string>{{93,1},{13,26}}</string>
+                <string>{{136,219},{75,87}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_left_2.png</key>
+            <key>Tree_grow_2.3.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,26}</string>
+                <string>{80,89}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,26}</string>
+                <string>{80,89}</string>
                 <key>textureRect</key>
-                <string>{{108,1},{13,26}}</string>
+                <string>{{1,149},{80,89}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_right_1.png</key>
+            <key>death_Tree.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,26}</string>
+                <string>{60,56}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,26}</string>
+                <string>{60,60}</string>
                 <key>textureRect</key>
-                <string>{{123,1},{13,26}}</string>
+                <string>{{78,231},{60,56}}</string>
                 <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
-            <key>Abigail_walk_right_2.png</key>
+            <key>init_Tree.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
-                <string>{13,26}</string>
+                <string>{50,111}</string>
                 <key>spriteSourceSize</key>
-                <string>{13,26}</string>
+                <string>{50,111}</string>
                 <key>textureRect</key>
-                <string>{{138,1},{13,26}}</string>
+                <string>{{130,1},{50,111}}</string>
                 <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>Abigail_walk_up_1.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{13,26}</string>
-                <key>spriteSourceSize</key>
-                <string>{13,26}</string>
-                <key>textureRect</key>
-                <string>{{153,1},{13,26}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>Abigail_walk_up_2.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{13,26}</string>
-                <key>spriteSourceSize</key>
-                <string>{13,26}</string>
-                <key>textureRect</key>
-                <string>{{168,1},{13,26}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>init_Abigail.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{14,27}</string>
-                <key>spriteSourceSize</key>
-                <string>{14,27}</string>
-                <key>textureRect</key>
-                <string>{{1,1},{14,27}}</string>
-                <key>textureRotated</key>
-                <false/>
+                <true/>
             </dict>
         </dict>
         <key>metadata</key>
@@ -209,13 +179,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>Abigail.png</string>
+            <string>Tree.png</string>
             <key>size</key>
-            <string>{182,29}</string>
+            <string>{242,295}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:9d810ed118a3691e93f6c004016e0744:23998c37443f0f6d2524febe7930520e:0b963253ce0a31a5f30da62ec95d501e$</string>
+            <string>$TexturePacker:SmartUpdate:a9b788d46002c2735ac55323fa68927e:92cdf988b126d848a10931b3eb4d4981:17271709d50eb8e92a6144b841a647b1$</string>
             <key>textureFileName</key>
-            <string>Abigail.png</string>
+            <string>Tree.png</string>
         </dict>
     </dict>
 </plist>

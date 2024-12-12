@@ -23,10 +23,11 @@ bool Changers::initWithAttributes(const std::string& altas, const std::string& n
     //加载图集
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile(altas);
 
-    sprite = Sprite::create("init_"+name + ".png");
+    sprite = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("init_"+name + ".png"));
     //初始位置均为0，0
     sprite->setPosition(0, 0);
     this->addChild(sprite);
+
 
     //nameLabel = Label::createWithSystemFont(name, "Abigail", 10);
     //nameLabel->setPosition(0, 10);
