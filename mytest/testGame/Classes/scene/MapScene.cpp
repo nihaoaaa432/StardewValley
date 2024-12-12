@@ -46,7 +46,7 @@ bool MapScene::init() {
     setCameraHeight(50.0f);  // 根据需要调整这个值
 
     // 创建角色精灵
-    player = Player::getInstance();
+    auto player = Player::getInstance();
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
     //player = Player::createWithAttributes("Abigail.png", "Abigail");
