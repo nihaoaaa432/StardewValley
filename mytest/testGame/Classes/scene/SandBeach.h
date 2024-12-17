@@ -1,33 +1,35 @@
 #pragma once
+
 #include "cocos2d.h"
 #include "layer/inventoryLayer.h" 
 #include"layer/StoppingLayer.h"
-#include "ParentScene.h"
-#include "MapScene.h"
-#include "string"
-#define FROM_FOREST_TO_FARM_Y SIZE_FOREST_Y*16*RATIO 
-#define FORM_FOREST_TO_FARM_X 16*22
-#define SIZE_FOREST_X 100
-#define SIZE_FOREST_Y 100
-class ForestScene : public ParentScene {
+#include <string>
+#include "ForestScene.h"
+#define SIZE_BEACH_X 50
+#define SIZE_BEACH_Y 50
+#define FROM_BEACH_TO_TOWN_X 16*23
+#define FROM_BEACH_TO_TOWN_Y SIZE_BEACH_Y*16*RATIO
+class SandBeach : public ParentScene {
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();
-    CREATE_FUNC(ForestScene);
+    CREATE_FUNC(SandBeach);
+
     // 获取单例实例
-    static ForestScene* getInstance();
+    static SandBeach* getInstance();
+
     // 销毁单例实例
     static void destroyInstance();
-
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
-    float speed = 100.0f;            // 移动速度
-    static ForestScene* _instance; // 静态单例指针
+    static SandBeach* _instance; // 静态单例指针
     InventoryLayer* inventoryLayer; //背包界面层
     StoppingLayer* stoppingLayer;    // 暂停界面层
 
-    void goToNextScene(const std::string& nextScene);
+
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
     void checkMapSwitch(const cocos2d::Vec2& position);
+    void goToNextScene(const std::string& nextScene);
+
 };

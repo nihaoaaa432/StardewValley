@@ -28,20 +28,6 @@ void MapScene:: destroyInstance() {
         _instance = nullptr;
     }
 }
-
-
-//// 调整镜头高度的函数
-//void MapScene::setCameraHeight(float height) {
-//    auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
-//    if (camera) {
-//        // 获取当前摄像机的位置
-//        cocos2d::Vec3 cameraPos = camera->getPosition3D();
-//
-//        // 设置新的高度
-//        cameraPos.z = height;
-//        camera->setPosition3D(cameraPos);
-//    }
-//}
 cocos2d::Scene* MapScene::createScene() {
     return MapScene::create();
 }
@@ -85,64 +71,6 @@ bool MapScene::init() {
     return true;
 }
 
-//void MapScene::update(float deltaTime) {
-//    if (moveDirection != cocos2d::Vec2::ZERO) {
-//        float speed = Player::getInstance()->getSpeed();
-//        cocos2d::Vec2 newPosition = Player::getInstance()->getPosition() + moveDirection * speed * deltaTime;
-//        if (canMoveToPosition(newPosition)) {
-//            Player::getInstance()->moveInDirection(moveDirection);  // 只有可以移动时才更新位置
-//            //player->setPosition(newPosition);
-//        }
-//    }
-//    checkMapSwitch(Player::getInstance()->getPosition());
-//
-//    // 更新镜头位置，确保镜头跟随角色
-//    updateCameraPosition();
-//}
-
-//void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-//    switch (keyCode) {
-//    case cocos2d::EventKeyboard::KeyCode::KEY_W:
-//        moveDirection = cocos2d::Vec2(0, 1);  // 向上
-//        break;
-//    case cocos2d::EventKeyboard::KeyCode::KEY_S:
-//        moveDirection = cocos2d::Vec2(0, -1); // 向下
-//        break;
-//    case cocos2d::EventKeyboard::KeyCode::KEY_A:
-//        moveDirection = cocos2d::Vec2(-1, 0); // 向左
-//        break;
-//    case cocos2d::EventKeyboard::KeyCode::KEY_D:
-//        moveDirection = cocos2d::Vec2(1, 0);  // 向右
-//        break;
-//        
-//    default:
-//        break;
-//    }
-//    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
-//        onBKeyPressed();
-//    }
-//    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
-//        stoppingLayer->setVisible(!stoppingLayer->isVisible());
-//    }
-//
-//
-//}
-
-//void MapScene::onBKeyPressed() {
-//    // 处理 "B" 键被按下的逻辑
-//    inventoryLayer->setVisible(!inventoryLayer->isVisible());
-//
-//}
-//
-//void MapScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-//    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_W ||
-//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_S ||
-//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_A ||
-//        keyCode == cocos2d::EventKeyboard::KeyCode::KEY_D) {
-//        moveDirection = cocos2d::Vec2::ZERO;
-//        Player::getInstance()->stopMoving(); // 停止移动
-//    }
-//}
 
 bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 获取名为 "walk" 的对象层
@@ -202,7 +130,7 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     else if (nextScene == "Forest") {
         newScene = ForestScene::getInstance();
         // 4. 初始化角色在新场景中的状态
-        player->setPosition(cocos2d::Vec2(0 , 0)); // 设置角色位置
+        player->setPosition(cocos2d::Vec2(FORM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
 
@@ -215,27 +143,10 @@ void MapScene::goToNextScene(const std::string& nextScene) {
 
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
-        //Player::getInstance()->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP));
-        //moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
-        //cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
         goToNextScene("Town");
     }
     else if (position.y < FROM_FARM_TO_FOREST_Y) {
-        //auto forestScene = ForestScene::getInstance();
-        //Player::getInstance()->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP));
-        //moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
-        //cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, ForestScene::getInstance(), cocos2d::Color3B::WHITE));
         goToNextScene("Forest");
     }
 }
 
-//// 镜头跟随角色的函数
-//void MapScene::updateCameraPosition() {
-//    // 获取摄像机
-//    auto director = cocos2d::Director::getInstance();
-//    auto camera = director->getRunningScene()->getDefaultCamera();
-//    if (camera) {
-//        // 设置摄像机的位置，确保角色始终位于屏幕中央
-//        camera->setPosition(Player::getInstance()->getPosition());
-//    }
-//}

@@ -1,11 +1,12 @@
-#include "ForestScene.h"
+#include "SandBeach.h"
 #include "TownScene.h"
 #include "character/Player.h"
+SandBeach* SandBeach::_instance = nullptr;
 
-ForestScene* ForestScene::_instance = nullptr;
-ForestScene* ForestScene:: getInstance() {
+// 获取单例实例
+SandBeach* SandBeach::getInstance() {
     if (!_instance) {
-        ForestScene* pRet = new(std::nothrow) ForestScene();
+        SandBeach* pRet = new(std::nothrow) SandBeach();
         if (pRet && pRet->init())
         {
             return pRet;
@@ -19,29 +20,28 @@ ForestScene* ForestScene:: getInstance() {
     }
     return _instance;
 }
-void ForestScene::destroyInstance() {
+// 销毁单例实例
+void SandBeach::destroyInstance() {
     if (_instance) {
         _instance->release();
         _instance = nullptr;
     }
-
 }
 
-cocos2d::Scene* ForestScene::createScene() {
-    return ForestScene::create();
+cocos2d::Scene* SandBeach::createScene() {
+    return SandBeach::create();
 }
 
-bool ForestScene::init() {
+bool SandBeach::init() {
     if (!Scene::init()) {
         return false;
     }
 
     // 加载地图
-    map = cocos2d::TMXTiledMap::create("forest/forest.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为中心
+    map = cocos2d::TMXTiledMap::create("beach/beach.tmx");
+    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为左下角
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
-    setCameraHeight(100.0f);
 
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
@@ -53,14 +53,10 @@ bool ForestScene::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
-
-    // 设置镜头初始高度
-    setCameraHeight(100.0f);  // 根据需要调整这个值
-
     // 键盘事件监听器
     auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(ForestScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(ForestScene::onKeyReleased, this);
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(SandBeach::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(SandBeach::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 每帧更新
@@ -70,7 +66,8 @@ bool ForestScene::init() {
 
     return true;
 }
-bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
+
+bool SandBeach::canMoveToPosition(const cocos2d::Vec2& position) {
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -86,6 +83,9 @@ bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
         // 获取 "walkable" 属性，检查此属性值是否为 false
         bool walkable = objMap["walkable"].asBool();
         if (!walkable) {
+            // 如果对象不可行走，检查它是否覆盖目标位置
+            // 左下角坐标相对于地图中心的坐标
+            // 不知为何要乘1.25
             float x = objMap["x"].asFloat();
             float y = objMap["y"].asFloat();
             float width = objMap["width"].asFloat();
@@ -103,8 +103,10 @@ bool ForestScene::canMoveToPosition(const cocos2d::Vec2& position) {
 
     // 如果不在任何不可行走区域内，则允许移动
     return true;
-} 
-void ForestScene::goToNextScene(const std::string& nextScene) {
+}
+
+
+void SandBeach::goToNextScene(const std::string& nextScene) {
     // 1. 获取当前场景
     auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
     auto player = Player::getInstance();
@@ -118,9 +120,9 @@ void ForestScene::goToNextScene(const std::string& nextScene) {
     Scene* newScene;
 
     // 4. 初始化角色在新场景中的状态
-    if (nextScene == "Farm") {
-        newScene = MapScene::getInstance();
-        player->setPosition(cocos2d::Vec2(FROM_FARM_TO_FOREST_X, FROM_FARM_TO_FOREST_Y)); // 设置角色位置
+    if (nextScene == "Town") {
+        newScene = TownScene::getInstance();
+        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_BEACH_X, FROM_TOWN_TO_BEACH_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
     // 5. 将角色添加到新场景
@@ -130,13 +132,11 @@ void ForestScene::goToNextScene(const std::string& nextScene) {
     cocos2d::Director::getInstance()->replaceScene(newScene);
 }
 
+
 // 检查玩家是否到达触发地图切换的区域
-void ForestScene::checkMapSwitch(const cocos2d::Vec2& position) {
-
-    if (position.y > FROM_FOREST_TO_FARM_Y) {
-        // 玩家到达了触发区域，切换到新的地图
-        goToNextScene("Farm");
+void SandBeach::checkMapSwitch(const cocos2d::Vec2& position) {
+    if ( position.y > FROM_BEACH_TO_TOWN_Y) {
+        goToNextScene("Town");
     }
+
 }
-
-
