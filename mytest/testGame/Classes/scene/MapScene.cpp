@@ -1,5 +1,6 @@
 #include "MapScene.h"
 #include "TownScene.h"
+#include "ForestScene.h"
 #include "character/Player.h"
 
 MapScene* MapScene::_instance = nullptr;
@@ -130,7 +131,7 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     else if (nextScene == "Forest") {
         newScene = ForestScene::getInstance();
         // 4. 初始化角色在新场景中的状态
-        player->setPosition(cocos2d::Vec2(FORM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
+        player->setPosition(cocos2d::Vec2(FROM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
 

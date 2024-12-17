@@ -6,7 +6,9 @@
 #include "MapScene.h"
 #include "string"
 #define FROM_FOREST_TO_FARM_Y SIZE_FOREST_Y*16*RATIO 
-#define FORM_FOREST_TO_FARM_X 16*22
+#define FROM_FOREST_TO_FARM_X 16*22
+#define FROM_FOREST_TO_TOWN_X SIZE_FOREST_X*16*RATIO
+#define FROM_FOREST_TO_TOWN_Y SIZE_FOREST_Y*16*0.7+16*2
 #define SIZE_FOREST_X 100
 #define SIZE_FOREST_Y 100
 class ForestScene : public ParentScene {

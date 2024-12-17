@@ -123,6 +123,12 @@ void ForestScene::goToNextScene(const std::string& nextScene) {
         player->setPosition(cocos2d::Vec2(FROM_FARM_TO_FOREST_X, FROM_FARM_TO_FOREST_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
+    else if (nextScene == "Town") {
+        newScene = TownScene::getInstance();
+        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FOREST_X, FROM_TOWN_TO_FOREST_Y_UP-16)); // 设置角色位置
+        player->setScale(1.0f); // 设置角色缩放比例
+    }
+
     // 5. 将角色添加到新场景
     newScene->addChild(player);
 
@@ -136,6 +142,9 @@ void ForestScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.y > FROM_FOREST_TO_FARM_Y) {
         // 玩家到达了触发区域，切换到新的地图
         goToNextScene("Farm");
+    }
+    else if (position.x > FROM_FOREST_TO_TOWN_X) {
+        goToNextScene("Town");
     }
 }
 

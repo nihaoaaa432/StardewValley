@@ -1,6 +1,7 @@
 #include "TownScene.h"
 #include "MapScene.h"
 #include "character/Player.h"
+#include "Lake.h"
 TownScene* TownScene::_instance = nullptr;
 
 // 获取单例实例
@@ -133,6 +134,16 @@ void TownScene::goToNextScene(const std::string& nextScene) {
         player->setPosition(cocos2d::Vec2(FROM_BEACH_TO_TOWN_X, FROM_BEACH_TO_TOWN_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
+    else if (nextScene == "Forest") {
+        newScene = ForestScene::getInstance();
+        player->setPosition(cocos2d::Vec2(FROM_FOREST_TO_TOWN_X, FROM_FOREST_TO_TOWN_Y)); // 设置角色位置
+        player->setScale(1.0f); // 设置角色缩放比例
+    }
+    else if (nextScene == "Lake") {
+        newScene = LakeScene::getInstance();
+        player->setPosition(cocos2d::Vec2(FROM_LAKE_TO_TOWN_X, FROM_LAKE_TO_TOWN_Y)); // 设置角色位置
+        player->setScale(1.0f); // 设置角色缩放比例
+    }
 
     // 5. 将角色添加到新场景
     newScene->addChild(player);
@@ -144,10 +155,16 @@ void TownScene::goToNextScene(const std::string& nextScene) {
 
 // 检查玩家是否到达触发地图切换的区域
 void TownScene::checkMapSwitch(const cocos2d::Vec2& position) {
-    if (position.x < FROM_TOWN_TO_FARM_X&&position.y>FROM_TOWN_TO_FARM_Y_UP -16&&position.y< FROM_TOWN_TO_FARM_Y_UP+16) {
+    if (position.x < FROM_TOWN_TO_FARM_X && position.y>FROM_TOWN_TO_FARM_Y_DOWN && position.y < FROM_TOWN_TO_FARM_Y_UP) {
         goToNextScene("Farm");
     }
     else if (position.y < FROM_TOWN_TO_BEACH_Y) {
         goToNextScene("Beach");
+    }
+    else if (position.x< FROM_TOWN_TO_FOREST_X && position.y>FROM_TOWN_TO_FOREST_Y_DOWN && position.y < FROM_TOWN_TO_FOREST_Y_UP) {
+        goToNextScene("Forest");
+    }
+    else if (position.y > FROM_TOWN_TO_LAKE_Y) {
+        goToNextScene("Lake");
     }
 }
