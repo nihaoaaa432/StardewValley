@@ -57,11 +57,7 @@ bool ForestScene::init() {
     // 设置镜头初始高度
     setCameraHeight(100.0f);  // 根据需要调整这个值
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(ForestScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(ForestScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    mouthEvent();
 
     // 每帧更新
     this->schedule([=](float deltaTime) {

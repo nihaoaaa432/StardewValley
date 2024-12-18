@@ -153,6 +153,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\character\Changers.cpp" />
     <ClCompile Include="..\Classes\character\Crops.cpp" />
+    <ClCompile Include="..\Classes\character\Npc\DialogSystem.cpp" />
+    <ClCompile Include="..\Classes\character\Npc\John.cpp" />
+    <ClCompile Include="..\Classes\character\Npc\Npc.cpp" />
     <ClCompile Include="..\Classes\character\Player.cpp" />
     <ClCompile Include="..\Classes\character\Tree.cpp" />
     <ClCompile Include="..\Classes\helper\MouseCoordinateLayer.cpp" />
@@ -166,12 +169,16 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\scene\ParentScene.cpp" />
     <ClCompile Include="..\Classes\scene\SandBeach.cpp" />
     <ClCompile Include="..\Classes\scene\TownScene.cpp" />
+    <ClCompile Include="..\Classes\ui\clock.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\character\Changers.h" />
     <ClInclude Include="..\Classes\character\Crops.h" />
+    <ClInclude Include="..\Classes\character\Npc\DialogSystem.h" />
+    <ClInclude Include="..\Classes\character\Npc\John.h" />
+    <ClInclude Include="..\Classes\character\Npc\Npc.h" />
     <ClInclude Include="..\Classes\character\Player.h" />
     <ClInclude Include="..\Classes\character\Tree.h" />
     <ClInclude Include="..\Classes\helper\MouseCoordinateLayer.h" />
@@ -185,6 +192,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\scene\ParentScene.h" />
     <ClInclude Include="..\Classes\scene\SandBeach.h" />
     <ClInclude Include="..\Classes\scene\TownScene.h" />
+    <ClInclude Include="..\Classes\ui\clock.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

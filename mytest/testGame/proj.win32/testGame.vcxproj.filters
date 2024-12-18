@@ -13,6 +13,12 @@
     <Filter Include="src\scene">
       <UniqueIdentifier>{a74ee5f4-fb20-4373-be73-dfcdfacedfa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="npc">
+      <UniqueIdentifier>{a75d9786-56f8-4fc1-957a-0abc72b11973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{fc3cd692-b788-4f0b-8a88-c59d91f8a7b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +68,18 @@
     <ClCompile Include="..\Classes\scene\SandBeach.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\Npc.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\John.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ui\clock.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\DialogSystem.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -110,6 +128,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\scene\SandBeach.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\Npc.h">
+      <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\John.h">
+      <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\clock.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\DialogSystem.h">
+      <Filter>npc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,9 @@
 #include "TownScene.h"
 #include "ForestScene.h"
 #include "character/Player.h"
-
+#include "character/Npc/John.h"
+#include "ui/clock.h"
+#include "character/Npc/DialogSystem.h"
 MapScene* MapScene::_instance = nullptr;
 
 // 获取单例实例
@@ -34,14 +36,14 @@ cocos2d::Scene* MapScene::createScene() {
 }
 
 bool MapScene::init() {
-    if (!Scene::init()) {
+    if (!ParentScene::init()) {
         return false;
     }
 
     // 加载地图
     map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
-    map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
+    map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置
     this->addChild(map);
 
     // 创建背包层
@@ -54,21 +56,28 @@ bool MapScene::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
-
     // 设置镜头初始高度
     setCameraHeight(50.0f);  // 根据需要调整这个值
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    mouthEvent();
 
+    // 在场景中创建一个 John NPC
+    auto john = John::create("npc/john.png");  // "john.png" 是你给 John NPC 的图片文件
+    john->setPosition(Vec2(100, 100));  // 设置 John 的初始位置
+    john->setSpeed(50.0f);  // 设置 John 的移动速度
+    john->setPath({ Vec2(100, 100), Vec2(200, 200), Vec2(300, 300) });  // 设置 John 的移动路径
+    this->addChild(john);  // 将 John 添加到场景中
+    // 创建并添加UI层
+    UILayer* uiLayer = UILayer::createLayer();
+    this->addChild(uiLayer, 100000);  // 确保它在最上层
     // 每帧更新
     this->schedule([=](float deltaTime) {
         update(deltaTime);
-        },0.02f, "update_key");
 
+        }, 0.02f, "update_key");
+
+    DialogSystem::getInstance()->setPosition(-150, -150); // 可根据需要设置位置
+    this->addChild(DialogSystem::getInstance());
     return true;
 }
 
@@ -125,7 +134,7 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     if (nextScene == "Town") {
         newScene = TownScene::getInstance();
         // 4. 初始化角色在新场景中的状态
-        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP)); // 设置角色位置
+        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP-16)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
     else if (nextScene == "Forest") {
@@ -134,7 +143,6 @@ void MapScene::goToNextScene(const std::string& nextScene) {
         player->setPosition(cocos2d::Vec2(FROM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
-
     // 5. 将角色添加到新场景
     newScene->addChild(player);
 

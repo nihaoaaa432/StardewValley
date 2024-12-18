@@ -1,6 +1,28 @@
 #include "ParentScene.h"
 #include "MapScene.h"
 #include "character/Player.h"
+#include "character/Npc/John.h"
+
+bool ParentScene::init() {
+    if (!Scene::init()) {
+        return false;
+    }
+
+    // 每帧更新
+    this->schedule([=](float deltaTime) {
+        update(deltaTime);  // 更新其他内容
+        }, 0.02f, "update_key");
+
+    return true;
+}
+
+void ParentScene::mouthEvent() {
+    // 键盘事件监听器
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+}
 bool ParentScene::canMoveToPosition(const cocos2d::Vec2& position) {
     return true;
 }  // 检测是否可以移动到目标位置
@@ -15,9 +37,16 @@ void ParentScene::update(float deltaTime) {
         }
     }
     checkMapSwitch(Player::getInstance()->getPosition());
-
-    // 更新镜头位置，确保镜头跟随角色
+    //// 更新镜头位置，确保镜头跟随角色
     updateCameraPosition();
+    // 更新所有 NPC 的状态（此处更新 John）
+    for (auto& child : this->getChildren()) {
+        // 检查 child 是否是 NPC 类型的对象
+        if (auto npc = dynamic_cast<NPC*>(child)) {
+            npc->update(deltaTime);  // 更新 NPC 的状态
+        }
+    }
+
 }
 
 void ParentScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
@@ -73,6 +102,7 @@ void ParentScene::updateCameraPosition() {
         // 设置摄像机的位置，确保角色始终位于屏幕中央
         camera->setPosition(Player::getInstance()->getPosition());
     }
+
 }
 
 void ParentScene::setCameraHeight(float height) {

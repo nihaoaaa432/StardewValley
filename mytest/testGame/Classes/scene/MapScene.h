@@ -25,7 +25,6 @@ public:
 
     // 销毁单例实例
     static void destroyInstance();
-
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向

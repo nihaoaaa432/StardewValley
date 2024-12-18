@@ -57,11 +57,7 @@ bool TownScene::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(TownScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(TownScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    mouthEvent();
 
     // 每帧更新
     this->schedule([=](float deltaTime) {

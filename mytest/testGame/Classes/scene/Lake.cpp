@@ -42,9 +42,6 @@ bool LakeScene::init() {
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
 
-    //// 创建角色精灵
-    //Player::getInstance()->setPosition(cocos2d::Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
-    //this->addChild(Player::getInstance());
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
@@ -55,12 +52,7 @@ bool LakeScene::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(LakeScene::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(LakeScene::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-
+    mouthEvent();
     // 每帧更新
     this->schedule([=](float deltaTime) {
         update(deltaTime);

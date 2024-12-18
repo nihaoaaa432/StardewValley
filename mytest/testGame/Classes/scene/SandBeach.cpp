@@ -53,11 +53,7 @@ bool SandBeach::init() {
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
-    // 键盘事件监听器
-    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed = CC_CALLBACK_2(SandBeach::onKeyPressed, this);
-    keyboardListener->onKeyReleased = CC_CALLBACK_2(SandBeach::onKeyReleased, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    mouthEvent();
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
