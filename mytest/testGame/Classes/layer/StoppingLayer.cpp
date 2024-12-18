@@ -2,20 +2,25 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
-// 暂停层创建函数
-StoppingLayer* StoppingLayer::createLayer() {
-    auto layer = new StoppingLayer();
-    if (layer && layer->init()) {
-        layer->autorelease();
-        return layer;
+// 单例对象指针初始化为nullptr
+StoppingLayer* StoppingLayer::_instance = nullptr;
+
+
+// 获取单例对象
+StoppingLayer* StoppingLayer::getInstance() {
+    if (_instance == nullptr) {
+        _instance = new StoppingLayer;
+        if (!_instance->init()) {
+            delete _instance;
+            _instance = nullptr;
+            CCLOG("StoppingLayer initialization failed!");
+        }
     }
-    else {
-        delete layer;
-        return nullptr;
-    }
+    return _instance;
 }
 
-// 初始化函数
+
+// 初始化单例对象
 bool StoppingLayer::init() {
     if (!Layer::init()) {
         return false;
@@ -29,23 +34,23 @@ bool StoppingLayer::init() {
 
     // 暂停层背景
     auto background = Sprite::create("Stopping.png");
-    background->setScale(0.7);
+    background->setScale(0.5);
     background->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
     this->addChild(background, 1);
 
     // 设置按钮
-    settingButton = ui::Button::create("sand.png", "sand.png");
+    auto settingButton = ui::Button::create("sand.png", "sand.png");
     settingButton->setContentSize(Size(30, 20));
-    settingButton->setPosition(Vec2(visibleSize.width / 2 + origin.x-60, visibleSize.height / 2 + origin.y-20));
+    settingButton->setPosition(Vec2(visibleSize.width / 2 + origin.x - 60, visibleSize.height / 2 + origin.y - 20));
     settingButton->addClickEventListener(CC_CALLBACK_1(StoppingLayer::onSettingButton, this));
-    this->addChild(settingButton,2);
+    this->addChild(settingButton, 2);
 
     // 退出按钮
-    quitButton = ui::Button::create("Quit.png", "Quit.png");
-    quitButton->setContentSize(Size(30, 20));
-    quitButton->setPosition(Vec2(visibleSize.width / 2 + origin.x+60, visibleSize.height / 2 + origin.y-20));
+    auto quitButton = ui::Button::create("Quit.png", "Quit.png");
+    quitButton->setScale(0.4f);
+    quitButton->setPosition(Vec2(visibleSize.width / 2 + origin.x + 150, visibleSize.height / 2 + origin.y - 80));
     quitButton->addClickEventListener(CC_CALLBACK_1(StoppingLayer::onQuitButton, this));
-    this->addChild(quitButton,2);
+    this->addChild(quitButton, 2);
 
     // 注册键盘事件监听器
     auto listener = EventListenerKeyboard::create();
@@ -55,6 +60,13 @@ bool StoppingLayer::init() {
     return true;
 }
 
+// 更新暂停界面位置
+void StoppingLayer::updatePosition(cocos2d::Vec2 position) {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    auto backpackSize = this->getContentSize(); // 假设背包界面有getContentSize()方法
+    position = position - Vec2(backpackSize.width / 2, backpackSize.height / 2);
+    this->setPosition(position);
+};
 
 // 响应设置按钮点击事件
 void StoppingLayer::onSettingButton(cocos2d::Ref* sender) {

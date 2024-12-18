@@ -1,7 +1,7 @@
 #pragma once
 #include "cocos2d.h"
-#include "layer/inventoryLayer.h" 
-#include"layer/StoppingLayer.h"
+#include "layer/InventoryLayer.h" 
+#include "layer/StoppingLayer.h"
 
 #define RATIO 1.25f
 #define FROM_FARM_TO_TOWN 16 * 25 * RATIO
@@ -19,8 +19,6 @@ private:
     cocos2d::Vec2 moveDirection;     // 移动方向
     float speed = 100.0f;            // 移动速度
 
-    InventoryLayer* inventoryLayer; //背包界面层
-    StoppingLayer* stoppingLayer;    // 暂停界面层
 
     void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void MapScene::onBKeyPressed();
@@ -31,5 +29,5 @@ private:
     void updateCameraPosition();
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
     void setCameraHeight(float height);
-    void checkMapSwitch(const cocos2d::Vec2& position);
+    //void checkMapSwitch(const cocos2d::Vec2& position);
 };
