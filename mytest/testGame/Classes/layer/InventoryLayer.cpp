@@ -1,4 +1,5 @@
 #include "InventoryLayer.h"
+#include "StoppingLayer.h"
 #include "../scene/MapScene.h"
 #include "cocos2d.h"
 USING_NS_CC;
@@ -31,7 +32,7 @@ bool InventoryLayer::init() {
 
     // 背包背景
     auto background = Sprite::create("Inventory.png");
-    background->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+    background->setPosition(Vec2(visibleSize.width / 2 + origin.x-20, visibleSize.height / 2 + origin.y+40));
     this->addChild(background, 1);
 
     // 创建侧边按钮栏
@@ -51,8 +52,8 @@ bool InventoryLayer::init() {
 
     // 创建社交页面
     socialPage = Layer::create();
-    auto socialBackground= Sprite::create("socialPage.png");
-    socialBackground->setPosition(Vec2(visibleSize.width / 2 + origin.x+37, visibleSize.height / 2 + origin.y+33));
+    auto socialBackground= Sprite::create("SocialPage.png");
+    socialBackground->setPosition(Vec2(visibleSize.width / 2 + origin.x+70, visibleSize.height / 2 + origin.y+35));
     
     // 获取背景图的原始大小
     Size backgroundSize = socialBackground->getContentSize();
@@ -64,19 +65,20 @@ bool InventoryLayer::init() {
     this->addChild(socialPage, 1);
 
     // 在社交页面中添加内容
-    auto socialLabel = Label::createWithSystemFont("socialPage", "Arial", 30);
+    auto socialLabel = Label::createWithSystemFont("SocialPage", "Arial", 30);
     socialLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
     socialPage->addChild(socialLabel,2);
 
     // 添加按钮（物品、社交）
-    auto itemButton = ui::Button::create("itemButton.png"); // 物品按钮
+    auto itemButton = ui::Button::create("ItemButton.png"); // 物品按钮
     itemButton->setContentSize(Size(60, 60));
-    itemButton->setPosition(Vec2(0, -40));
+    itemButton->setPosition(Vec2(33, -33));
     buttonBar->addChild(itemButton);
 
-    auto socialButton = ui::Button::create("socialButton.png"); // 社交按钮
+
+    auto socialButton = ui::Button::create("SocialButton.png"); // 社交按钮
     socialButton->setContentSize(Size(60, 60));
-    socialButton->setPosition(Vec2(0, -130));
+    socialButton->setPosition(Vec2(33, -123));
     buttonBar->addChild(socialButton);
 
     // 默认显示物品页面
@@ -131,6 +133,9 @@ void InventoryLayer::onMouseDown(cocos2d::Event* event) {
     // 获取按钮区域（物品按钮和社交按钮的矩形区域）
     auto itemButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 - 150, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
     auto socialButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 + 50, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
+
+    auto stoppingPlayer = StoppingLayer::getInstance();
+    if (stoppingPlayer->isVisible())  return;
 
     // 判断鼠标点击的区域
     if (itemButtonArea.containsPoint(mousePos)) {

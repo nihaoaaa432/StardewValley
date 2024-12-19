@@ -1,5 +1,6 @@
 #include "MapScene.h"
 #include "TownScene.h"
+#include "helper/MouseCoordinateLayer.h"
 // 调整镜头高度的函数
 void MapScene::setCameraHeight(float height) {
     auto camera = cocos2d::Director::getInstance()->getRunningScene()->getDefaultCamera();
@@ -21,6 +22,8 @@ bool MapScene::init() {
         return false;
     }
 
+
+
     // 加载地图
     map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
     map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
@@ -33,6 +36,22 @@ bool MapScene::init() {
     player = cocos2d::Sprite::create("sand.png");
     player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
     this->addChild(player);
+
+    // 获取 ToolLayer 单例实例并添加到场景中
+    auto toolLayer = ToolLayer::getInstance();
+    this->addChild(toolLayer,2);
+
+    // 初始化工具栏，传入工具图片列表
+    std::vector<std::string> toolImages = {
+        "Tool1.png",
+        "Tool2.png",
+        "Tool3.png",
+        "Tool4.png",
+        "Tool5.png",
+        // 添加更多工具图片
+    };
+    toolLayer->initToolBar(toolImages);
+
 
     // 创建背包层
     auto inventoryLayer = InventoryLayer::getInstance();
@@ -52,6 +71,10 @@ bool MapScene::init() {
     keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
     keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto mouseGet = MouseCoordinateLayer::create();
+    this->addChild(mouseGet);
+    //mouseGet->setPosition(cocos2d::Vec2(0,0));
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
@@ -82,6 +105,8 @@ void MapScene::update(float deltaTime) {
     if (stoppingLayer->isVisible()) {
         stoppingLayer->updatePosition(player->getPosition());
     }
+    auto toolLayer = ToolLayer::getInstance();
+    toolLayer->updatePosition(player->getPosition());
 }
 
 void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
@@ -108,10 +133,7 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
         onBKeyPressed();
     }
     else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
-        if (inventoryLayer->isVisible()) 
-            inventoryLayer->setVisible(false);
-        else 
-            stoppingLayer->setVisible(!stoppingLayer->isVisible());
+        stoppingLayer->onEscPress();
     }
 
 

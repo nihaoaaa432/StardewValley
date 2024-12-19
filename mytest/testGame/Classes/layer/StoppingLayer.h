@@ -12,12 +12,18 @@ public:
     // 初始化单例对象
     virtual bool init();
 
+    // 按下了设置按钮
     void onSettingButton(cocos2d::Ref* sender);
+    // 按下了退出游戏按钮
     void onQuitButton(cocos2d::Ref* sender);
-
-    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    // 按下了音乐按钮
+    void onMusicButton(cocos2d::Ref* sender);
+    // 按下了返回按钮
+    void onBackButton(cocos2d::Ref* sender);
 
     void updatePosition(cocos2d::Vec2 position);
+    // 处理esc按键
+    void onEscPress();
 
     CREATE_FUNC(StoppingLayer);
 
@@ -27,6 +33,8 @@ private:
     static void destroyInstance();
 
     static StoppingLayer* _instance; // 单例对象指针
+
+    cocos2d::Layer* settingLayer;
 
     int currentPage;            // 当前页面索引
 };

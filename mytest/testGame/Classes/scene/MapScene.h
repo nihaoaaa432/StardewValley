@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 #include "layer/InventoryLayer.h" 
 #include "layer/StoppingLayer.h"
+#include "layer/ToolLayer.h"
 
 #define RATIO 1.25f
 #define FROM_FARM_TO_TOWN 16 * 25 * RATIO
