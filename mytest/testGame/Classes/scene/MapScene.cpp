@@ -10,8 +10,21 @@
 USING_NS_CC;
 
 MapScene* MapScene::_instance = nullptr;
+using namespace cocos2d;
 
+void MapScene::JohnMove() {
+    // 在场景中创建一个 John NPC
+    auto john = John::create("npc/john.png");  // "john.png" 是你给 John NPC 的图片文件
+    john->setPosition(Vec2(30 * 16 * RATIO, 30 * 16 * RATIO));  // 设置 John 的初始位置
+    john->setSpeed(50.0f);  // 设置 John 的移动速度
+    john->setPath({ Vec2(100, 100), Vec2(200, 200), Vec2(300, 300) });  // 设置 John 的移动路径
+    this->addChild(john);  // 将 John 添加到场景中
 
+    // 每10秒重新开始按路径走一遍
+    this->schedule([=](float dt) {
+        john->resetDailyMovement();  // 重置每日的移动
+    }, 10, "reset_daily_movement");
+}
 // 获取单例实例
 MapScene* MapScene::getInstance() {
     if (!_instance) {
@@ -46,9 +59,9 @@ bool MapScene::init() {
     }
 
     // 加载地图
-    map = TMXTiledMap::create("farm/farm.tmx");
-    map->setAnchorPoint(Vec2(0.5f, 0.5f));  // 将锚点设置为中心
-    map->setPosition(Vec2(0, 0));  // 设置地图的位置
+    map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
+    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为中心
+    map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置
     this->addChild(map);
 
     // 创建背包层
@@ -63,8 +76,9 @@ bool MapScene::init() {
 
     // 设置镜头初始高度
     setCameraHeight(50.0f);  // 根据需要调整这个值
-
+    //键盘事件
     mouthEvent();
+    JohnMove();
 
     auto wm = Crops::create(Watermelon);
     this->addChild(wm);
@@ -84,9 +98,9 @@ bool MapScene::init() {
         update(deltaTime);
 
         }, 0.02f, "update_key");
-
-    DialogSystem::getInstance()->setPosition(-150, -150); // 可根据需要设置位置
     this->addChild(DialogSystem::getInstance());
+
+
     return true;
 }
 
@@ -110,8 +124,8 @@ bool MapScene::canMoveToPosition(const  Vec2& position) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
             // 不知为何要乘RATIO
-            float x = objMap["x"].asFloat() - SIZE_FARM_X / 2 * 16 * RATIO;
-            float y = objMap["y"].asFloat() - SIZE_FARM_Y / 2 * 16 * RATIO;
+            float x = objMap["x"].asFloat();
+            float y = objMap["y"].asFloat();
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
@@ -133,13 +147,28 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     // 1. 获取当前场景
     auto currentScene = Director::getInstance()->getRunningScene();
     auto player = Player::getInstance();
+    DialogSystem::getInstance()->destroyInstance();
+    // 2. 获取并移除时钟节点的父节点
+    auto clock = Clock::getInstance();
+    if (clock) {
+        // 确保时钟有父节点且父节点是当前场景
+        if (clock->getParent() == currentScene) {
+            clock->removeFromParent();
+            // 检查时钟是否已经成功移除
+            if (clock->getParent() == nullptr) {
+                CCLOG("123");
+            }
+        }
+    }
 
-    // 2. 从当前场景移除角色
+    // 3. 从当前场景移除角色
     if (currentScene && player->getParent() == currentScene) {
         player->removeFromParent();
     }
+
     Scene* newScene;
-    // 3. 创建新场景
+
+    // 4. 创建新场景
     if (nextScene == "Town") {
         newScene = TownScene::getInstance();
         // 4. 初始化角色在新场景中的状态
@@ -152,14 +181,16 @@ void MapScene::goToNextScene(const std::string& nextScene) {
         player->setPosition(Vec2(FROM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
-    // 5. 将角色添加到新场景
+
+    // 6. 将角色添加到新场景
     newScene->addChild(player);
 
-    // 6. 切换到新场景
-    Director::getInstance()->replaceScene(newScene);
+    // 7. 切换到新场景
+    cocos2d::Director::getInstance()->replaceScene(newScene);
 }
 
-void MapScene::checkMapSwitch(const  Vec2& position) {
+
+void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
         goToNextScene("Town");
     }

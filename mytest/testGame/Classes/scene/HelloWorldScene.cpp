@@ -3,6 +3,7 @@
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
 #include "character/Player.h"
+#include "test.h"
 USING_NS_CC;
 
 std::string playerName = "";
@@ -125,9 +126,11 @@ bool HelloWorld::init()
         else {
             // 若昵称有效，更新玩家姓名并切换场景
             playerName = nickname;
-            auto mapScene = MapScene::getInstance();
             auto player = Player::getInstance();
-            player->setPosition(0, 0);
+           // player->setPosition(25 * 16 * RATIO, 25 * 16 * RATIO);
+           player->setPosition(0,0);
+
+            auto mapScene = TestScene::getInstance();
             mapScene->addChild(Player::getInstance());
 
             cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));

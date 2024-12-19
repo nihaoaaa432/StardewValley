@@ -8,10 +8,10 @@
 #include "ForestScene.h"
 #include "string"
 #define RATIO 1.25f
-#define FROM_FARM_TO_TOWN_X 16 * 25 * RATIO
-#define FROM_FARM_TO_TOWN_Y 16*3.5
-#define FROM_FARM_TO_FOREST_X 0-16*3
-#define FROM_FARM_TO_FOREST_Y -16*25*RATIO
+#define FROM_FARM_TO_TOWN_X 16 * 50 * RATIO
+#define FROM_FARM_TO_TOWN_Y 16*28.5*RATIO
+#define FROM_FARM_TO_FOREST_X 0.45*16*SIZE_FARM_X*RATIO
+#define FROM_FARM_TO_FOREST_Y 0
 #define SIZE_FARM_X 50
 #define SIZE_FARM_Y 50
 class MapScene : public ParentScene {
@@ -24,6 +24,9 @@ public:
 
     // 销毁单例实例
     static void destroyInstance();
+
+    //npc的移动
+    void JohnMove();
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向

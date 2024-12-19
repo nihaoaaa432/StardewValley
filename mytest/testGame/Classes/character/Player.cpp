@@ -190,49 +190,46 @@ Animate* Player::createIdleAnimation(const std::string& direction)
 
 // 统一的移动方法
 void Player::moveInDirection(const cocos2d::Vec2& direction) {
+    if (isTalking) {
+        return;  // 如果正在对话，停止移动
+    }
+
     moveDirection = direction;
     isMoving = true;
 
-    // 根据移动方向更新角色朝向
-    if (direction.y > 0) {  // 向上
+    if (direction.y > 0) {
         lastDirection = "up";
     }
-    else if (direction.y < 0) {  // 向下
+    else if (direction.y < 0) {
         lastDirection = "down";
     }
-    else if (direction.x > 0) {  // 向右
+    else if (direction.x > 0) {
         lastDirection = "right";
     }
-    else if (direction.x < 0) {  // 向左
+    else if (direction.x < 0) {
         lastDirection = "left";
     }
 
-    //播放行走动画
-#ifdef ENABLE_ANIMATIONS
-    playWalkAnimation(lastDirection);
-#endif
+   // playWalkAnimation(lastDirection);
 
-    //// 计算目标位置
-    auto targetPosition = this->getPosition() + moveDirection * speed * 0.02f; // 0.02f是每帧时间的单位
-
-    //// 创建移动动画（使用 MoveTo）
-    //auto moveAction = cocos2d::MoveTo::create(0.2f, targetPosition); // 0.2秒移动到目标位置
-    //this->runAction(moveAction); // 执行动作
+    auto targetPosition = this->getPosition() + moveDirection * speed * 0.02f;
     this->setPosition(targetPosition);
 }
-
+//角色正在对话
+void Player::setIsTalking(bool talking) {
+    isTalking = talking;
+}
 // 停止移动（通过调用动作的停止来停止移动）
 void Player::stopMoving() {
+    if (isTalking) {
+        return;  // 如果正在对话，停止移动
+    }
+
     isMoving = false;
-    moveDirection = cocos2d::Vec2::ZERO;
+    moveDirection = Vec2::ZERO;
 
-    //停止动画并设置站立帧
-    //stopAnimation();
-#ifdef ENABLE_ANIMATIONS
-    playIdleAnimation(lastDirection);
-#endif
+    //playIdleAnimation(lastDirection);
 }
-
 // 播放行走动画
 void Player::playWalkAnimation(const std::string& direction) {
     stopAnimation();
