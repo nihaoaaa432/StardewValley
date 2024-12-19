@@ -2,6 +2,8 @@
 #include "MapScene.h"
 #include "character/Player.h"
 #include "Lake.h"
+#include "ui/Clock.h"
+
 TownScene* TownScene::_instance = nullptr;
 
 // 获取单例实例
@@ -117,13 +119,14 @@ void TownScene::goToNextScene(const std::string& nextScene) {
     }
 
     // 3. 创建新场景
-    Scene* newScene ;
+    Scene* newScene;
 
     // 4. 初始化角色在新场景中的状态
     if (nextScene == "Farm") {
         newScene = MapScene::getInstance();
         player->setPosition(cocos2d::Vec2(FROM_FARM_TO_TOWN_X - 16, FROM_FARM_TO_TOWN_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
+        Clock::getInstance()->setPosition(cocos2d::Vec2(300, 300));
     }
     else if (nextScene == "Beach") {
         newScene = SandBeach::getInstance();

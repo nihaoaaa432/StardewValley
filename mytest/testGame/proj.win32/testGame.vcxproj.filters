@@ -80,6 +80,9 @@
     <ClCompile Include="..\Classes\character\Npc\DialogSystem.cpp">
       <Filter>npc</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\scene\test.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -140,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\character\Npc\DialogSystem.h">
       <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\test.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,12 @@
+// John.cpp
+
 #include "John.h"
-#include "character/Player.h"
-#include "DialogSystem.h"
+#include "ui/clock.h"
 
 John* John::create(const std::string& filename) {
     John* john = new John();
     if (john && john->init(filename)) {
-        john->autorelease();  // 使用自动释放
+        john->autorelease();
         return john;
     }
     else {
@@ -15,57 +16,70 @@ John* John::create(const std::string& filename) {
 }
 
 bool John::init(const std::string& filename) {
-    // 调用基类 NPC 的 init 函数来初始化 NPC（例如加载图片等）
     if (!NPC::init(filename)) {
         return false;
     }
 
     // 初始化 John 特有的属性
-    _isTalking = false;  // 默认不与玩家对话
+    _isTalking = false;
+    _isMoving = true;
+    _currentPathIndex = 0;
+
     return true;
 }
 
 void John::update(float deltaTime) {
-    // 调用基类的 update 函数（执行基础的更新功能）
+    // 先执行基础的更新功能
     NPC::update(deltaTime);
 
-    // 执行 John 独有的行为
-    customBehavior(deltaTime);
+    // 如果正在与玩家对话，停止移动
+    if (_isTalking) {
+        _isMoving = false;
+    }
+    else {
+        _isMoving = true;
+    }
+
+    // 如果允许移动，更新移动路径
+    if (_isMoving && !_path.empty()) {
+        customBehavior(deltaTime);
+    }
 }
 
 void John::customBehavior(float deltaTime) {
-    // 获取玩家实例
+    if (_path.empty()) {
+        return;
+    }
+
+    // 移动到当前路径点
+    Vec2 target = _path[_currentPathIndex];
+    float distance = this->getPosition().distance(target);
+
+    // 如果距离目标点很近，切换到下一个路径点
+    if (distance < 5.0f) {
+        _currentPathIndex = (_currentPathIndex + 1) % _path.size();  // 循环路径
+    }
+
+    // 计算朝向目标点的方向并移动
+    Vec2 direction = target - this->getPosition();
+    direction.normalize();
+    this->setPosition(this->getPosition() + direction * _speed * deltaTime);
+
+    // 判断是否与玩家接近，并开始/结束对话
     auto player = Player::getInstance();
-
-    // 检查与玩家的距离，决定是否开始对话
-    float distance = this->getPosition().distance(player->getPosition());
-    if (distance <= 50.0f && !_isTalking) {
+    if (this->getPosition().distance(player->getPosition()) <= 50.0f && !_isTalking) {
         _isTalking = true;
-
-        // 启动对话框系统并显示对话内容
-        DialogSystem::getInstance()->showDialogWithChoices(
-            "John: Hello, Player! What do you want to do?",
-            { "Ask about the town", "Ask for a quest", "Goodbye" },
-            [this](int choice) {
-                // 根据玩家的选择，更新对话内容
-                switch (choice) {
-                case 0:
-                    DialogSystem::getInstance()->updateDialogText("John: The town is beautiful.");
-                    break;
-                case 1:
-                    DialogSystem::getInstance()->updateDialogText("John: I have a quest for you!");
-                    break;
-                case 2:
-                    DialogSystem::getInstance()->hideDialog(); // 结束对话
-                    break;
-                default:
-                    break;
-                }
-            });
+        DialogSystem::getInstance()->startDialog("Hello, Player!");  // 启动对话框
     }
-    else if (distance > 50.0f && _isTalking) {
-        // 玩家远离 NPC 时，结束对话
+    else if (this->getPosition().distance(player->getPosition()) > 50.0f && _isTalking) {
         _isTalking = false;
-        DialogSystem::getInstance()->hideDialog();
+        DialogSystem::getInstance()->endDialog();  // 结束对话框
     }
+}
+
+void John::resetDailyMovement() {
+    // 每天重置路径和相关状态
+    _currentPathIndex = 0; // 从路径的开始位置重新开始
+    _isMoving = true;  // 重新开始移动
+    // 如果需要可以在这里更改路径，或做其他每日循环的动作
 }

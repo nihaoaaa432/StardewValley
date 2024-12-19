@@ -2,34 +2,45 @@
 #define __DIALOG_SYSTEM_H__
 
 #include "cocos2d.h"
-#include <vector>
-#include <string>
-#include <functional>
 
 class DialogSystem : public cocos2d::Node {
 public:
+    // 获取 DialogSystem 的单例实例
     static DialogSystem* getInstance();
+
+    // 启动对话框
+    void startDialog(const std::string& dialogText);
+
+    // 结束对话框
+    void endDialog();
+
+    // 更新对话框文本
+    void updateDialog(const std::string& dialogText);
+
+    // 销毁实例（如果需要）
     static void destroyInstance();
 
-    bool init();
-    void showDialog(const std::string& message);
-    void showDialogWithChoices(const std::string& message,
-        const std::vector<std::string>& choices,
-        std::function<void(int)> onChoiceSelected);
-    void hideDialog();
-    void updateDialogText(const std::string& message);
+    // 构造函数
+    DialogSystem();
 
+    // 析构函数
     ~DialogSystem();
 
 private:
-    DialogSystem();
+    // 显示或隐藏对话框
+    void showDialog(bool show);
 
-    bool _isDialogVisible;
+    // 对话框背景
+    cocos2d::Sprite* _dialogBox;
+
+    // 对话框文本标签
     cocos2d::Label* _dialogLabel;
-    cocos2d::Menu* _choicesMenu;
-    cocos2d::LayerColor* _dialogBackground; // 对话框背景
 
-    static DialogSystem* _instance;
+    // 是否激活对话框
+    bool _isDialogActive;
+
+    // 单例实例
+    static DialogSystem* instance;
 };
 
 #endif // __DIALOG_SYSTEM_H__

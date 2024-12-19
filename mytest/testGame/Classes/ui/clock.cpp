@@ -1,69 +1,74 @@
-// UILayer.cpp
-#include "clock.h"
+#include "Clock.h"
+#include "character/Player.h"
+#include "cocos2d.h"
 
 USING_NS_CC;
-
-UILayer::UILayer() : clockLabel(nullptr), timeInSeconds(0) {}
-
-UILayer::~UILayer() {}
-
-UILayer* UILayer::createLayer()
-{
-    UILayer* layer = new UILayer();
-    if (layer && layer->init())
-    {
-        layer->autorelease();
-        return layer;
+Clock* Clock::instance = nullptr;
+Clock* Clock::getInstance() {
+    if (instance == nullptr) {
+        instance = createLayer();
     }
-    else
+    return instance;
+}
+
+Clock* Clock::createLayer() {
+    Clock* clockLayer = new Clock();
+    if (clockLayer && clockLayer->init()) {
+     //   clockLayer->autorelease();  // 正常使用 autorelease 管理内存
+        return clockLayer;
+    }
+    CC_SAFE_DELETE(clockLayer);  // 销毁不合格的实例
+    return nullptr;
+}
+
+void Clock::destroyInstance()
+{
+    if (instance != nullptr)
     {
-        delete layer;
-        return nullptr;
+        //instance->release();
+        instance = nullptr;
     }
 }
 
-bool UILayer::init()
-{
-    if (!Layer::init())
-    {
+
+bool Clock::init() {
+    if (!Layer::init()) {
         return false;
     }
 
-    // 初始化时钟UI
-    clockLabel = Label::createWithSystemFont("Time: 00:00", "Arial", 24);
-    clockLabel->setPosition(Director::getInstance()->getVisibleSize().width - 100,
-        Director::getInstance()->getVisibleSize().height - 50);
-    this->addChild(clockLabel, 100000);  // 设置很高的z-order，确保时钟UI在最上层
+    // 创建时钟标签
+    _clockLabel = Label::createWithSystemFont("00:00", "Arial", 24);
+    if (_clockLabel) {
+        _clockLabel->setPosition(Vec2(50, 50));  // 初始位置
+        this->addChild(_clockLabel);
+    }
 
-    // 每帧更新时间
+    // 每秒更新一次
     this->schedule([=](float deltaTime) {
-        updateClock(deltaTime);  // 更新时钟
-        }, 1.0f, "update_clock_key");  // 每秒更新一次时钟
+        updateClock(deltaTime);
+        updateClockPosition();
+        }, 1.0f, "clock_update_key");
 
     return true;
 }
 
-void UILayer::updateClock(float deltaTime)
-{
-    timeInSeconds += deltaTime;
+void Clock::updateClock(float deltaTime) {
+    // 更新时钟
+    _elapsedTime += deltaTime;
+    int minutes = static_cast<int>(_elapsedTime) / 60;
+    int seconds = static_cast<int>(_elapsedTime) % 60;
 
-    // 获取小时、分钟、秒数
-    int hours = static_cast<int>(timeInSeconds / 3600);
-    int minutes = static_cast<int>((timeInSeconds - hours * 3600) / 60);
-    int seconds = static_cast<int>(timeInSeconds - hours * 3600 - minutes * 60);
-
-    // 格式化时间
-    char timeStr[9];
-    snprintf(timeStr, sizeof(timeStr), "Time: %02d:%02d:%02d", hours, minutes, seconds);
-
-    // 设置时钟显示
-    setClockLabel(timeStr);
+    char buffer[10];
+    snprintf(buffer, sizeof(buffer), "%02d:%02d", minutes, seconds);
+    _clockLabel->setString(buffer);
 }
 
-void UILayer::setClockLabel(const std::string& timeStr)
-{
-    if (clockLabel)
-    {
-        clockLabel->setString(timeStr);  // 更新时钟文字
-    }
+void Clock::updateClockPosition() {
+    // 获取玩家的位置
+    Vec2 playerPosition = Player::getInstance()->getPosition();
+    
+}
+
+float Clock::getTime() {
+    return _elapsedTime;
 }

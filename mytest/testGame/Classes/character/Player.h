@@ -55,17 +55,16 @@ public:
 	float getSpeed();
 
 	cocos2d::Vec2& getMoveDirection();//获取移动方向
-
+	void setIsTalking(bool talking);
 private:
 	static Player* _instance;//静态单例指针
-
 	//基本移动相关
 	bool isMoving;//是否在移动
 	bool isInventoryOpen;//背包是否打开
 	float speed;//移动速度
 	cocos2d::Vec2 moveDirection;//移动方向
 	//cocos2d::EventListenerKeyboard* keyboardListener;//键盘事件监听器
-
+	bool isTalking;
 	//动画相关
 	std::string lastDirection;//最后的移动方向，用于选择站立动画；
 
