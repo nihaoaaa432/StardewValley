@@ -15,7 +15,7 @@ Player* Player::getInstance()
 {
     if (_instance == nullptr)
     {
-        _instance = Player::createWithAttributes("Abigail.plist", "Abigail");
+        _instance = Player::create();
     }
     return _instance;
 }
@@ -29,12 +29,17 @@ void Player::destroyInstance()
     }
 }
 
-Player* Player::createWithAttributes(const std::string& imagePath,const std::string& name) {
+Player* Player::create() {
     Player* player = new(std::nothrow) Player();
-    if (player && player->initWithAttributes(imagePath,name)) {
-       // player->autorelease();
-        return player;
+    if (player)
+    {
+        player->name = "Abigail";
+        if (player->init()) {
+            // player->autorelease();
+            return player;
+        }
     }
+
     else {
         delete player;
         player = nullptr;
@@ -42,8 +47,8 @@ Player* Player::createWithAttributes(const std::string& imagePath,const std::str
     }
 }
 
-bool Player::initWithAttributes(const std::string& imagePath,const std::string&name) {
-    if (!Changers::initWithAttributes(imagePath,name)){
+bool Player::init() {
+    if (!Node::init()) {
         return false;
     }
 
@@ -58,17 +63,25 @@ bool Player::initWithAttributes(const std::string& imagePath,const std::string&n
     /*this->schedule([=](float deltaTime) {
         update(deltaTime);
         }, "update_key");*/
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Abigail.plist");
 
     isMoving = false;
     isInventoryOpen = false;
     moveDirection = Vec2::ZERO;
     speed = INIT_PLAYER_SPEED;
 
+    //初始化纹理
+    sprite = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("init_" + name + ".png"));
+    //初始位置均为0，0
+    sprite->setPosition(0, 0);
+    this->addChild(sprite);
+
+
 #ifdef ENABLE_ANIMATIONS
     loadAnimations();
 #endif
-   //move(Vec2(0, 1));
-   // playWalkAnimation("up");
+    //move(Vec2(0, 1));
+    // playWalkAnimation("up");
 
     return true;
 }
@@ -76,16 +89,16 @@ bool Player::initWithAttributes(const std::string& imagePath,const std::string&n
 void Player::loadAnimations()
 {
     //加载站立动画
-    Changers::Animations["stand_up"] = createIdleAnimation("up");
-    Changers::Animations["stand_down"] = createIdleAnimation("down");
-    Changers::Animations["stand_left"] = createIdleAnimation("left");
-    Changers::Animations["stand_right"] = createIdleAnimation("right");
+    Animations["stand_up"] = createIdleAnimation("up");
+    Animations["stand_down"] = createIdleAnimation("down");
+    Animations["stand_left"] = createIdleAnimation("left");
+    Animations["stand_right"] = createIdleAnimation("right");
 
     // 加载行走动画
-    Changers::Animations["walk_up"] = createWalkAnimation("up");
-    Changers::Animations["walk_down"] = createWalkAnimation("down");
-    Changers::Animations["walk_left"] = createWalkAnimation("left");
-    Changers::Animations["walk_right"] = createWalkAnimation("right");
+    Animations["walk_up"] = createWalkAnimation("up");
+    Animations["walk_down"] = createWalkAnimation("down");
+    Animations["walk_left"] = createWalkAnimation("left");
+    Animations["walk_right"] = createWalkAnimation("right");
 }
 
 //创建行走动画
@@ -114,7 +127,7 @@ Animate* Player::createIdleAnimation(const std::string& direction)
 
 //void Player::onEnter()
 //{
-//    Changers::onEnter();
+//      onEnter();
 //    //确保监听器在场景进入时注册
 //    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 //}
@@ -123,7 +136,7 @@ Animate* Player::createIdleAnimation(const std::string& direction)
 //{
 //    //退出时注销键盘监听器
 //    _eventDispatcher->removeEventListener(keyboardListener);
-//    Changers::onExit();
+//      onExit();
 //}
 //
 ////注册键盘事件
@@ -177,35 +190,35 @@ Animate* Player::createIdleAnimation(const std::string& direction)
 
 // 统一的移动方法
 void Player::moveInDirection(const cocos2d::Vec2& direction) {
-        moveDirection = direction;
-        isMoving = true;
+    moveDirection = direction;
+    isMoving = true;
 
-        // 根据移动方向更新角色朝向
-        if (direction.y > 0) {  // 向上
-            lastDirection = "up";
-        }
-        else if (direction.y < 0) {  // 向下
-            lastDirection = "down";
-        }
-        else if (direction.x > 0) {  // 向右
-            lastDirection = "right";
-        }
-        else if (direction.x < 0) {  // 向左
-            lastDirection = "left";
-        }
+    // 根据移动方向更新角色朝向
+    if (direction.y > 0) {  // 向上
+        lastDirection = "up";
+    }
+    else if (direction.y < 0) {  // 向下
+        lastDirection = "down";
+    }
+    else if (direction.x > 0) {  // 向右
+        lastDirection = "right";
+    }
+    else if (direction.x < 0) {  // 向左
+        lastDirection = "left";
+    }
 
-        //播放行走动画
+    //播放行走动画
 #ifdef ENABLE_ANIMATIONS
-        playWalkAnimation(lastDirection);
+    playWalkAnimation(lastDirection);
 #endif
 
-        //// 计算目标位置
-        auto targetPosition = this->getPosition() + moveDirection * speed*0.02f; // 0.02f是每帧时间的单位
+    //// 计算目标位置
+    auto targetPosition = this->getPosition() + moveDirection * speed * 0.02f; // 0.02f是每帧时间的单位
 
-        //// 创建移动动画（使用 MoveTo）
-        //auto moveAction = cocos2d::MoveTo::create(0.2f, targetPosition); // 0.2秒移动到目标位置
-        //this->runAction(moveAction); // 执行动作
-        this->setPosition(targetPosition);
+    //// 创建移动动画（使用 MoveTo）
+    //auto moveAction = cocos2d::MoveTo::create(0.2f, targetPosition); // 0.2秒移动到目标位置
+    //this->runAction(moveAction); // 执行动作
+    this->setPosition(targetPosition);
 }
 
 // 停止移动（通过调用动作的停止来停止移动）
@@ -227,15 +240,15 @@ void Player::playWalkAnimation(const std::string& direction) {
     auto animation = "walk_" + direction;
 
     // 播放缓存的行走动画
-    if (Changers::Animations.find(animation) != Changers::Animations.end()) {
-        Changers::currentAnimation = Changers::Animations[animation];
-        // sprite->runAction(RepeatForever::create(Changers::currentAnimation));
+    if (Animations.find(animation) != Animations.end()) {
+        currentAnimation = Animations[animation];
+        // sprite->runAction(RepeatForever::create(  currentAnimation));
 
         //创建RepeatForever动作
-        Changers::currentAction = RepeatForever::create(Changers::currentAnimation);
+        currentAction = RepeatForever::create(currentAnimation);
 
-        if (Changers::currentAnimation !=nullptr&& Changers::sprite->getNumberOfRunningActions()==0) {
-            Changers::sprite->runAction(currentAction);
+        if (currentAnimation != nullptr && sprite->getNumberOfRunningActions() == 0) {
+            sprite->runAction(currentAction);
         }
     }
     //}
@@ -244,20 +257,20 @@ void Player::playWalkAnimation(const std::string& direction) {
 // 播放站立帧
 void Player::playIdleAnimation(const std::string& direction) {
 
-     stopAnimation();
+    stopAnimation();
 
 
     // 播放站立帧
     auto animation = "stand_" + direction;
-    
+
     // 播放缓存的站立动画
-    if (Changers::Animations.find(animation) != Changers::Animations.end()) {
-        Changers::currentAnimation = Changers::Animations[animation];
+    if (Animations.find(animation) != Animations.end()) {
+        currentAnimation = Animations[animation];
 
         // 创建 RepeatForever 动作
-        Changers::currentAction = RepeatForever::create(Changers::currentAnimation);
+        currentAction = RepeatForever::create(currentAnimation);
 
-        Changers::sprite->runAction(currentAction);
+        sprite->runAction(currentAction);
     }
 }
 
@@ -298,15 +311,15 @@ void Player::closeInventory() {
 }
 // 停止动画
 void Player::stopAnimation() {
-    if(Changers::currentAnimation!=nullptr){
+    if (currentAnimation != nullptr) {
         // 停止当前的动画
 
-        Changers::sprite->stopAction(Changers::currentAction);
+        sprite->stopAction(currentAction);
 
-        Changers::currentAnimation = nullptr;
-        Changers::currentAction = nullptr;
+        currentAnimation = nullptr;
+        currentAction = nullptr;
     }
- 
+
 }
 
 Vec2& Player::getMoveDirection()

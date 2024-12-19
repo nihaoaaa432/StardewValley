@@ -58,7 +58,6 @@
       <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\character\Crops.cpp" />
-    <ClCompile Include="..\Classes\character\Tree.cpp" />
     <ClCompile Include="..\Classes\scene\Lake.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
@@ -119,7 +118,6 @@
       <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\character\Crops.h" />
-    <ClInclude Include="..\Classes\character\Tree.h" />
     <ClInclude Include="..\Classes\scene\Lake.h">
       <Filter>src\scene</Filter>
     </ClInclude>

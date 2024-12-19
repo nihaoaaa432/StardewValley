@@ -5,7 +5,12 @@
 #include "character/Npc/John.h"
 #include "ui/clock.h"
 #include "character/Npc/DialogSystem.h"
+#include "character/Crops.h"
+
+USING_NS_CC;
+
 MapScene* MapScene::_instance = nullptr;
+
 
 // 获取单例实例
 MapScene* MapScene::getInstance() {
@@ -25,13 +30,13 @@ MapScene* MapScene::getInstance() {
     return _instance;
 }
 // 销毁单例实例
-void MapScene:: destroyInstance() {
+void MapScene::destroyInstance() {
     if (_instance) {
         _instance->release();
         _instance = nullptr;
     }
 }
-cocos2d::Scene* MapScene::createScene() {
+Scene* MapScene::createScene() {
     return MapScene::create();
 }
 
@@ -41,9 +46,9 @@ bool MapScene::init() {
     }
 
     // 加载地图
-    map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
-    map->setAnchorPoint(cocos2d::Vec2(0.5f, 0.5f));  // 将锚点设置为中心
-    map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置
+    map = TMXTiledMap::create("farm/farm.tmx");
+    map->setAnchorPoint(Vec2(0.5f, 0.5f));  // 将锚点设置为中心
+    map->setPosition(Vec2(0, 0));  // 设置地图的位置
     this->addChild(map);
 
     // 创建背包层
@@ -60,6 +65,10 @@ bool MapScene::init() {
     setCameraHeight(50.0f);  // 根据需要调整这个值
 
     mouthEvent();
+
+    auto wm = Crops::create(Watermelon);
+    this->addChild(wm);
+    wm->setPosition(Vec2(-100, -100));
 
     // 在场景中创建一个 John NPC
     auto john = John::create("npc/john.png");  // "john.png" 是你给 John NPC 的图片文件
@@ -82,7 +91,7 @@ bool MapScene::init() {
 }
 
 
-bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
+bool MapScene::canMoveToPosition(const  Vec2& position) {
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -101,13 +110,13 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
             // 如果对象不可行走，检查它是否覆盖目标位置
             // 左下角坐标相对于地图中心的坐标
             // 不知为何要乘RATIO
-            float x = objMap["x"].asFloat() - SIZE_FARM_X /2 * 16 * RATIO;
-            float y = objMap["y"].asFloat() - SIZE_FARM_Y /2 * 16 * RATIO;
+            float x = objMap["x"].asFloat() - SIZE_FARM_X / 2 * 16 * RATIO;
+            float y = objMap["y"].asFloat() - SIZE_FARM_Y / 2 * 16 * RATIO;
             float width = objMap["width"].asFloat();
             float height = objMap["height"].asFloat();
 
             // 创建对象的边界框
-            cocos2d::Rect objRect(x, y, width, height);
+            Rect objRect(x, y, width, height);
 
             // 如果目标位置在不可行走的区域内，则返回 false
             if (!walkable && objRect.containsPoint(position)) {
@@ -122,7 +131,7 @@ bool MapScene::canMoveToPosition(const cocos2d::Vec2& position) {
 
 void MapScene::goToNextScene(const std::string& nextScene) {
     // 1. 获取当前场景
-    auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
+    auto currentScene = Director::getInstance()->getRunningScene();
     auto player = Player::getInstance();
 
     // 2. 从当前场景移除角色
@@ -134,23 +143,23 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     if (nextScene == "Town") {
         newScene = TownScene::getInstance();
         // 4. 初始化角色在新场景中的状态
-        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP-16)); // 设置角色位置
+        player->setPosition(Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y_UP - 16)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
     else if (nextScene == "Forest") {
         newScene = ForestScene::getInstance();
         // 4. 初始化角色在新场景中的状态
-        player->setPosition(cocos2d::Vec2(FROM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
+        player->setPosition(Vec2(FROM_FOREST_TO_FARM_X, FROM_FOREST_TO_FARM_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
     // 5. 将角色添加到新场景
     newScene->addChild(player);
 
     // 6. 切换到新场景
-    cocos2d::Director::getInstance()->replaceScene(newScene);
+    Director::getInstance()->replaceScene(newScene);
 }
 
-void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
+void MapScene::checkMapSwitch(const  Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {
         goToNextScene("Town");
     }

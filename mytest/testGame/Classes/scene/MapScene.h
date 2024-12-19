@@ -4,7 +4,6 @@
 #include "layer/inventoryLayer.h" 
 #include"layer/StoppingLayer.h"
 #include "character/Player.h"
-#include "character/Tree.h"
 
 #include "ForestScene.h"
 #include "string"
@@ -32,7 +31,6 @@ private:
 
     InventoryLayer* inventoryLayer; //背包界面层
     StoppingLayer* stoppingLayer;    // 暂停界面层
-    Tree* tree;
 
     void goToNextScene(const std::string& nextScene);
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置

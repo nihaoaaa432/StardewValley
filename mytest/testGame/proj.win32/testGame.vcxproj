@@ -157,7 +157,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\character\Npc\John.cpp" />
     <ClCompile Include="..\Classes\character\Npc\Npc.cpp" />
     <ClCompile Include="..\Classes\character\Player.cpp" />
-    <ClCompile Include="..\Classes\character\Tree.cpp" />
     <ClCompile Include="..\Classes\helper\MouseCoordinateLayer.cpp" />
     <ClCompile Include="..\Classes\layer\InventoryLayer.cpp" />
     <ClCompile Include="..\Classes\layer\StoppingLayer.cpp" />
@@ -180,7 +179,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\character\Npc\John.h" />
     <ClInclude Include="..\Classes\character\Npc\Npc.h" />
     <ClInclude Include="..\Classes\character\Player.h" />
-    <ClInclude Include="..\Classes\character\Tree.h" />
     <ClInclude Include="..\Classes\helper\MouseCoordinateLayer.h" />
     <ClInclude Include="..\Classes\layer\InventoryLayer.h" />
     <ClInclude Include="..\Classes\layer\StoppingLayer.h" />
