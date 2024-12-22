@@ -44,12 +44,12 @@ bool SandBeach::init() {
     this->addChild(map);
 
     // 创建背包层
-    inventoryLayer = InventoryLayer::createLayer();
+    auto inventoryLayer = InventoryLayer::getInstance();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
     this->addChild(inventoryLayer);  // 将背包界面添加到场景中
 
     // 创建暂停层
-    stoppingLayer = StoppingLayer::createLayer();
+    auto stoppingLayer = StoppingLayer::getInstance();
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 

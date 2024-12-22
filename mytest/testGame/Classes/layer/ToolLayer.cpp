@@ -7,25 +7,16 @@ ToolLayer* ToolLayer::instance = nullptr;
 
 ToolLayer* ToolLayer::getInstance() {
     if (!instance) {
-        instance = new ToolLayer();
-        if (instance && instance->init()) {
-            // 初始化工具栏时需要传入工具图片列表
-        }
-        else {
-            CC_SAFE_DELETE(instance);
+        instance = new ToolLayer;
+        if (!instance->init()) {
+            delete instance;
             instance = nullptr;
+            CCLOG("ToolLayer initialization failed!");
         }
     }
     return instance;
 }
 
-ToolLayer::ToolLayer() {
-    // 私有构造函数
-}
-
-ToolLayer::~ToolLayer() {
-    // 私有析构函数
-}
 
 bool ToolLayer::init() {
     // 调用父类的 init 方法
@@ -185,6 +176,7 @@ void ToolLayer::updatePosition(cocos2d::Vec2 position) {
     position = position - Vec2(backpackSize.width / 2, backpackSize.height / 2);
     this->setPosition(position);
 }
+
 int ToolLayer::getSize(){
     return toolSlots.size();;
 }

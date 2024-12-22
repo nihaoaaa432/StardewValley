@@ -43,16 +43,31 @@ bool ForestScene::init() {
     this->addChild(map);
     setCameraHeight(100.0f);
 
+    // 获取 ToolLayer 单例实例并添加到场景中
+    auto toolLayer = ToolLayer::getInstance();
+    this->addChild(toolLayer, 100);
+
+    // 初始化工具栏，传入工具图片列表
+    std::vector<std::string> toolImages = {
+        "Tool1.png",
+        "Tool2.png",
+        "Tool3.png",
+        "Tool4.png",
+        "Tool5.png",
+        // 添加更多工具图片
+    };
+    toolLayer->initToolBar(toolImages);
+
+
     // 创建背包层
-    inventoryLayer = InventoryLayer::createLayer();
+    auto inventoryLayer = InventoryLayer::getInstance();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
-    this->addChild(inventoryLayer);  // 将背包界面添加到场景中
+    this->addChild(inventoryLayer, 2);  // 将背包界面添加到场景中
 
     // 创建暂停层
-    stoppingLayer = StoppingLayer::createLayer();
+    auto stoppingLayer = StoppingLayer::getInstance();
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
-    this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
-
+    this->addChild(stoppingLayer, 1000);  // 将暂停界面添加到场景中
 
     // 设置镜头初始高度
     setCameraHeight(100.0f);  // 根据需要调整这个值

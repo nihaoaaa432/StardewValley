@@ -26,6 +26,34 @@ bool ParentScene::init() {
             clock->updateClockPosition(); // 更新时钟位置
         }
         }, 0.02f, "update_key");
+    
+    // 获取 ToolLayer 单例实例并添加到场景中
+   auto toolLayer = ToolLayer::getInstance();
+   this->addChild(toolLayer, 100);
+
+   // 初始化工具栏，传入工具图片列表
+    std::vector<std::string> toolImages = {
+        "Tool1.png",
+        "Tool2.png",
+        "Tool3.png",
+        "Tool4.png",
+        "Tool5.png",
+        // 添加更多工具图片
+    };
+    toolLayer->initToolBar(toolImages);
+
+
+    // 创建背包层
+    auto inventoryLayer = InventoryLayer::getInstance();
+    inventoryLayer->setVisible(false);  // 默认隐藏背包界面
+    this->addChild(inventoryLayer, 2);  // 将背包界面添加到场景中
+
+    // 创建暂停层
+    auto stoppingLayer = StoppingLayer::getInstance();
+    stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
+    this->addChild(stoppingLayer, 1000);  // 将暂停界面添加到场景中
+    
+    mouthEvent();
 
     return true;
 }
@@ -58,6 +86,18 @@ void ParentScene::update(float deltaTime) {
     // 更新镜头位置，确保镜头跟随角色
     updateCameraPosition();
 
+    //背包处于打开状态时以任务为中心
+    auto inventoryLayer = InventoryLayer::getInstance();
+    if (inventoryLayer->isVisible()) {
+        inventoryLayer->updatePosition(Player::getInstance()->getPosition());
+    }
+    auto stoppingLayer = StoppingLayer::getInstance();
+    if (stoppingLayer->isVisible()) {
+        stoppingLayer->updatePosition(Player::getInstance()->getPosition());
+    }
+    auto toolLayer = ToolLayer::getInstance();
+    toolLayer->updatePosition(Player::getInstance()->getPosition());
+
     // 更新所有 NPC 的状态（此处更新 John）
     for (auto& child : this->getChildren()) {
         if (auto npc = dynamic_cast<NPC*>(child)) {
@@ -67,23 +107,26 @@ void ParentScene::update(float deltaTime) {
 }
 
 void ParentScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
-    switch (keyCode) {
-    case cocos2d::EventKeyboard::KeyCode::KEY_W:
-        moveDirection = cocos2d::Vec2(0, 1);  // 向上
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_S:
-        moveDirection = cocos2d::Vec2(0, -1); // 向下
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_A:
-        moveDirection = cocos2d::Vec2(-1, 0); // 向左
-        break;
-    case cocos2d::EventKeyboard::KeyCode::KEY_D:
-        moveDirection = cocos2d::Vec2(1, 0);  // 向右
-        break;
-
-    default:
-        break;
+    auto stoppingLayer = StoppingLayer::getInstance();
+    if (!stoppingLayer->isVisible()) {
+        switch (keyCode) {
+        case cocos2d::EventKeyboard::KeyCode::KEY_W:
+            moveDirection = cocos2d::Vec2(0, 1);  // 向上
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            moveDirection = cocos2d::Vec2(0, -1); // 向下
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+            moveDirection = cocos2d::Vec2(-1, 0); // 向左
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_D:
+            moveDirection = cocos2d::Vec2(1, 0);  // 向右
+            break;
+        default:
+            break;
+        }
     }
+
 
     if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
         onBKeyPressed();
@@ -104,6 +147,7 @@ void ParentScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d
 
 void ParentScene::onBKeyPressed() {
     // 处理 "B" 键被按下的逻辑
+    auto inventoryLayer = InventoryLayer::getInstance();
     inventoryLayer->setVisible(!inventoryLayer->isVisible());
 }
 

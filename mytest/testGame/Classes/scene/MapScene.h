@@ -5,7 +5,6 @@
 #include "layer/ToolLayer.h"
 #include "ParentScene.h"
 #include "character/Player.h"
-
 #include "ForestScene.h"
 #include "string"
 #define RATIO 1.25f
@@ -35,11 +34,9 @@ private:
     void update(float deltaTime);    // 每帧更新函数
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onBKeyPressed();
-    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
-    void setCameraHeight(float height);
-    void updateCameraPosition();
     void goToNextScene(const std::string& nextScene);
     void checkMapSwitch(const cocos2d::Vec2& position);
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 };
 

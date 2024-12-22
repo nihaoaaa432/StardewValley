@@ -52,17 +52,14 @@ bool Player::init() {
         return false;
     }
 
-    //注册键盘事件
-    //registerKeyboardEvent();
-
     //// 每 0.1 秒调用一次 update 方法
     //schedule([this](float delta) {
     //    this->update(delta);
     //   }, 0.1f, "player_update_key");
     // 每帧更新
-    /*this->schedule([=](float deltaTime) {
+    this->schedule([=](float deltaTime) {
         update(deltaTime);
-        }, "update_key");*/
+        }, "update_key");
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Abigail.plist");
 
     isMoving = false;
@@ -273,7 +270,7 @@ void Player::playIdleAnimation(const std::string& direction) {
 
 void Player::openInventory() {
     if (!isInventoryOpen) {
-        auto inventoryLayer = InventoryLayer::createLayer();
+        auto inventoryLayer = InventoryLayer::getInstance();
         inventoryLayer->setName("inventoryLayer");
         this->getParent()->addChild(inventoryLayer);
 

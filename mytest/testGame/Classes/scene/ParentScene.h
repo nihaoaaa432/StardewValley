@@ -1,7 +1,8 @@
 #pragma once
 #include "cocos2d.h"
-#include "layer/inventoryLayer.h" 
-#include"layer/StoppingLayer.h"
+#include "layer/InventoryLayer.h" 
+#include "layer/StoppingLayer.h"
+#include "layer/ToolLayer.h"
 class ParentScene : public cocos2d::Scene {
 public:
     void onBKeyPressed();
@@ -19,6 +20,4 @@ public:
 private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
-    InventoryLayer* inventoryLayer; //背包界面层
-    StoppingLayer* stoppingLayer;    // 暂停界面层
 };

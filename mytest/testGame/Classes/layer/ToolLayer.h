@@ -22,9 +22,6 @@ public:
     int getSize();
 
 private:
-    // 构造函数和析构函数私有化，防止外部创建实例
-    ToolLayer();
-    ~ToolLayer();
 
     // 工具栏槽位
     std::vector<cocos2d::ui::Button*> toolSlots;

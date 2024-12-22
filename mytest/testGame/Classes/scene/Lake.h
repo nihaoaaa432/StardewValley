@@ -1,7 +1,8 @@
 #pragma once
 #include "cocos2d.h"
-#include "layer/inventoryLayer.h" 
-#include"layer/StoppingLayer.h"
+#include "layer/InventoryLayer.h" 
+#include "layer/StoppingLayer.h"
+#include "layer/ToolLayer.h"
 #include "ParentScene.h"
 #include "TownScene.h"
 #include "string"
@@ -24,8 +25,6 @@ private:
     cocos2d::Vec2 moveDirection;     // 移动方向
     float speed = 100.0f;            // 移动速度
     static LakeScene* _instance; // 静态单例指针
-    InventoryLayer* inventoryLayer; //背包界面层
-    StoppingLayer* stoppingLayer;    // 暂停界面层
 
     void goToNextScene(const std::string& nextScene);
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置

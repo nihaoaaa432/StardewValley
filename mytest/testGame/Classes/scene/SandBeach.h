@@ -1,8 +1,9 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "layer/inventoryLayer.h" 
-#include"layer/StoppingLayer.h"
+#include "layer/InventoryLayer.h" 
+#include "layer/StoppingLayer.h"
+#include "layer/ToolLayer.h"
 #include <string>
 #include "ForestScene.h"
 #define SIZE_BEACH_X 50
@@ -24,8 +25,6 @@ private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
     static SandBeach* _instance; // 静态单例指针
-    InventoryLayer* inventoryLayer; //背包界面层
-    StoppingLayer* stoppingLayer;    // 暂停界面层
 
 
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
