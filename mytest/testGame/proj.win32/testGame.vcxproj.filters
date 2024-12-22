@@ -48,9 +48,6 @@
     <ClCompile Include="..\Classes\scene\ForestScene.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\character\Changers.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\character\Player.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -79,8 +76,8 @@
     <ClCompile Include="..\Classes\character\Npc\DialogSystem.cpp">
       <Filter>npc</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\scene\test.cpp">
-      <Filter>src\scene</Filter>
+    <ClCompile Include="..\Classes\layer\ToolLayer.cpp">
+      <Filter>src\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +108,6 @@
     <ClInclude Include="..\Classes\scene\ForestScene.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\character\Changers.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\character\Player.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -142,8 +136,8 @@
     <ClInclude Include="..\Classes\character\Npc\DialogSystem.h">
       <Filter>npc</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\scene\test.h">
-      <Filter>src\scene</Filter>
+    <ClInclude Include="..\Classes\layer\ToolLayer.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
