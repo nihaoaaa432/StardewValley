@@ -2,9 +2,12 @@
 #include "SimpleAudioEngine.h"
 #include "ui/CocosGUI.h"
 #include "MapScene.h"
-#include "TownScene.h"
+#include "character/Player.h"
+#include "test.h"
 USING_NS_CC;
+
 std::string playerName = "";
+
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
@@ -26,17 +29,12 @@ bool HelloWorld::init()
         return false;
     }
 
-
     //创建背景
-    //获取游戏的窗口大小
     auto visibleSize = Director::getInstance()->getVisibleSize();
-
-
-    //获取屏幕的原点位置，即左下角坐标，通常是（0,0）
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     auto background = Sprite::create("StartScene.jpg");
-    Size originalSize = background->getContentSize(); // 图片的原始大小
-    Size targetSize = Size(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT); // 目标大小
+    Size originalSize = background->getContentSize();
+    Size targetSize = Size(DESIGN_RESOLUTION_WIDTH, DESIGN_RESOLUTION_HEIGHT);
 
     // 计算缩放比例
     float scaleX = targetSize.width / originalSize.width;
@@ -45,10 +43,9 @@ bool HelloWorld::init()
     // 设置缩放比例
     background->setScale(scaleX, scaleY);
     background->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
-
     this->addChild(background, 0);
 
-    //添加艺术字
+    // 添加艺术字
     auto sprite = Sprite::create("begin.png");
     if (sprite == nullptr)
     {
@@ -57,10 +54,7 @@ bool HelloWorld::init()
     else
     {
         sprite->setScale(0.75);
-        // position the sprite on the center of the screen
         sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height * 3 / 4 + origin.y));
-
-        // add the sprite as a child to this layer
         this->addChild(sprite, 0);
     }
 
@@ -71,6 +65,7 @@ bool HelloWorld::init()
     textField->setMaxLengthEnabled(true);
     textField->setTextColor(cocos2d::Color4B(0, 32, 96, 255));
     this->addChild(textField);
+
     // 创建标签
     auto promptLabel = Label::createWithTTF("", "../Resources/Fonts/DingDingJinBuTi.ttf", TEXT_SIZE);
     promptLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 - 50));
@@ -79,9 +74,6 @@ bool HelloWorld::init()
 
     // 为文本框添加事件监听器
     textField->addEventListener([promptLabel](Ref* sender, cocos2d::ui::TextField::EventType type) {
-        // 使用 Lambda 表达式为文本框添加事件监听器。Lambda 表达式捕获了外部的 promptLabel 对象，这样可以在事件处理中修改这个标签的内容。
-        // Lambda 表达式会处理两种事件类型：文本插入（INSERT_TEXT）和文本删除（DELETE_BACKWARD）。
-
         if (type == cocos2d::ui::TextField::EventType::INSERT_TEXT || type == cocos2d::ui::TextField::EventType::DELETE_BACKWARD) {
             auto textField = dynamic_cast<cocos2d::ui::TextField*>(sender);
             std::string nickname = textField->getString();
@@ -90,51 +82,66 @@ bool HelloWorld::init()
         }
         });
 
-    //创建按钮
+    // 创建按钮
     auto startButton = ui::Button::create("CreateANewRole.png", "CreateANewRoleSelect.png");
-    float stratButtonX = targetSize.width / originalSize.width;
-    float stratButtonY = targetSize.height / originalSize.height;
+    float startButtonX = targetSize.width / originalSize.width;
+    float startButtonY = targetSize.height / originalSize.height;
 
-    // 设置缩放比例和位置
-    startButton->setScale(stratButtonX, stratButtonY);
+    startButton->setScale(startButtonX, startButtonY);
     startButton->setPosition(Vec2(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 5));
     this->addChild(startButton);
 
-    // 创建标签
+    // 创建标签，用于提示昵称为空
     auto nameLabel = Label::createWithTTF("", "../Resources/Fonts/DingDingJinBuTi.ttf", TEXT_SIZE);
-    nameLabel->setPosition(stratButtonX, stratButtonY + 50);
+    nameLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 5 + 50));
     nameLabel->setVisible(false);
     nameLabel->setTextColor(cocos2d::Color4B(COLOR_RED, COLOR_GREEN, COLOR_BLUE, ALPHA));
+    this->addChild(nameLabel);
 
-    // 为按钮添加事件
-    startButton->addClickEventListener([this,nameLabel,textField](Ref* sender) {
+    // 为按钮添加点击事件
+    startButton->addClickEventListener([this, nameLabel, textField](Ref* sender) {
         std::string nickname = textField->getString();
+
+        // 判断昵称是否为空
         if (nickname.empty()) {
+            // 显示提示信息
             nameLabel->setString(u8"游戏昵称不能为空");
             nameLabel->setVisible(true);
+
+            // 1.5秒后隐藏提示信息
             this->scheduleOnce([nameLabel](float dt) {
                 nameLabel->setVisible(false);
                 }, 1.5, "HideEmptyPromptLabel");
+
+            // 禁用按钮，防止重复点击
+            auto startButton = dynamic_cast<ui::Button*>(sender);
+            startButton->setEnabled(false);
+
+            // 1.5秒后重新启用按钮
+            this->scheduleOnce([startButton](float dt) {
+                startButton->setEnabled(true);
+                }, 1.5, "EnableStartButton");
+
         }
         else {
-
+            // 若昵称有效，更新玩家姓名并切换场景
             playerName = nickname;
-            cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, MapScene::createScene(), cocos2d::Color3B::WHITE));
+            auto player = Player::getInstance();
+           // player->setPosition(25 * 16 * RATIO, 25 * 16 * RATIO);
+           player->setPosition(0,0);
+
+            auto mapScene = TestScene::getInstance();
+            mapScene->addChild(Player::getInstance());
+
+            cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(0.3, mapScene, cocos2d::Color3B::WHITE));
         }
         });
+
     return true;
 }
 
-
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
-    //Close the cocos2d-x game scene and quit the application
+    //关闭游戏场景并退出应用
     Director::getInstance()->end();
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }

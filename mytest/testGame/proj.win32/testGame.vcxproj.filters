@@ -13,6 +13,12 @@
     <Filter Include="src\scene">
       <UniqueIdentifier>{a74ee5f4-fb20-4373-be73-dfcdfacedfa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="npc">
+      <UniqueIdentifier>{a75d9786-56f8-4fc1-957a-0abc72b11973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{fc3cd692-b788-4f0b-8a88-c59d91f8a7b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,14 +39,48 @@
     <ClCompile Include="..\Classes\layer\InventoryLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Characters.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\helper\MouseCoordinateLayer.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\layer\StoppingLayer.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\ForestScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Changers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\ParentScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Crops.cpp" />
+    <ClCompile Include="..\Classes\scene\Lake.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\Mine1.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\SandBeach.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\Npc.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\John.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ui\clock.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\character\Npc\DialogSystem.cpp">
+      <Filter>npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\scene\test.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,11 +105,45 @@
     <ClInclude Include="..\Classes\layer\StoppingLayer.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Characters.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\helper\MouseCoordinateLayer.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\ForestScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Changers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\ParentScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Crops.h" />
+    <ClInclude Include="..\Classes\scene\Lake.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\Mine1.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\SandBeach.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\Npc.h">
+      <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\John.h">
+      <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\clock.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character\Npc\DialogSystem.h">
+      <Filter>npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\scene\test.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

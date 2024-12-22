@@ -1,15 +1,11 @@
-#include "TownScene.h"
-#include "MapScene.h"
-#include "character/Player.h"
 #include "Lake.h"
-#include "ui/Clock.h"
-
-TownScene* TownScene::_instance = nullptr;
+#include "character/Player.h"
+LakeScene* LakeScene::_instance = nullptr;
 
 // 获取单例实例
-TownScene* TownScene::getInstance() {
+LakeScene* LakeScene::getInstance() {
     if (!_instance) {
-        TownScene* pRet = new(std::nothrow) TownScene();
+        LakeScene* pRet = new(std::nothrow) LakeScene();
         if (pRet && pRet->init())
         {
             return pRet;
@@ -24,31 +20,28 @@ TownScene* TownScene::getInstance() {
     return _instance;
 }
 // 销毁单例实例
-void TownScene::destroyInstance() {
+void LakeScene::destroyInstance() {
     if (_instance) {
         _instance->release();
         _instance = nullptr;
     }
 }
 
-Scene* TownScene::createScene() {
-    return TownScene::create();
+cocos2d::Scene* LakeScene::createScene() {
+    return LakeScene::create();
 }
 
-bool TownScene::init() {
+bool LakeScene::init() {
     if (!Scene::init()) {
         return false;
     }
 
     // 加载地图
-    map = TMXTiledMap::create("town/town.tmx");
-    map->setAnchorPoint(Vec2(0, 0));  // 将锚点设置为左下角
-    map->setPosition(Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
+    map = cocos2d::TMXTiledMap::create("lake/lake.tmx");
+    map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为左下角
+    map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
 
-    //// 创建角色精灵
-    //Player::getInstance()->setPosition( Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
-    //this->addChild(Player::getInstance());
     // 创建背包层
     inventoryLayer = InventoryLayer::createLayer();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
@@ -60,7 +53,6 @@ bool TownScene::init() {
     this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
 
     mouthEvent();
-
     // 每帧更新
     this->schedule([=](float deltaTime) {
         update(deltaTime);
@@ -69,7 +61,7 @@ bool TownScene::init() {
     return true;
 }
 
-bool TownScene::canMoveToPosition(const  Vec2& position) {
+bool LakeScene::canMoveToPosition(const cocos2d::Vec2& position) {
     // 获取名为 "walk" 的对象层
     auto objectLayer = map->getObjectGroup("walk");  // 对象层名称
     if (!objectLayer) {
@@ -94,7 +86,7 @@ bool TownScene::canMoveToPosition(const  Vec2& position) {
             float height = objMap["height"].asFloat();
 
             // 创建对象的边界框
-            Rect objRect(x, y, width, height);
+            cocos2d::Rect objRect(x, y, width, height);
 
             // 如果目标位置在不可行走的区域内，则返回 false
             if (objRect.containsPoint(position)) {
@@ -108,9 +100,9 @@ bool TownScene::canMoveToPosition(const  Vec2& position) {
 }
 
 
-void TownScene::goToNextScene(const std::string& nextScene) {
+void LakeScene::goToNextScene(const std::string& nextScene) {
     // 1. 获取当前场景
-    auto currentScene = Director::getInstance()->getRunningScene();
+    auto currentScene = cocos2d::Director::getInstance()->getRunningScene();
     auto player = Player::getInstance();
 
     // 2. 从当前场景移除角色
@@ -122,48 +114,22 @@ void TownScene::goToNextScene(const std::string& nextScene) {
     Scene* newScene;
 
     // 4. 初始化角色在新场景中的状态
-    if (nextScene == "Farm") {
-        newScene = MapScene::getInstance();
-        player->setPosition(Vec2(FROM_FARM_TO_TOWN_X - 16, FROM_FARM_TO_TOWN_Y)); // 设置角色位置
-        player->setScale(1.0f); // 设置角色缩放比例
-        Clock::getInstance()->setPosition(cocos2d::Vec2(300, 300));
-    }
-    else if (nextScene == "Beach") {
-        newScene = SandBeach::getInstance();
-        player->setPosition(Vec2(FROM_BEACH_TO_TOWN_X, FROM_BEACH_TO_TOWN_Y)); // 设置角色位置
+    if (nextScene == "Town") {
+        newScene = TownScene::getInstance();
+        player->setPosition(cocos2d::Vec2(FROM_TOWN_TO_LAKE_X, FROM_TOWN_TO_LAKE_Y)); // 设置角色位置
         player->setScale(1.0f); // 设置角色缩放比例
     }
-    else if (nextScene == "Forest") {
-        newScene = ForestScene::getInstance();
-        player->setPosition(Vec2(FROM_FOREST_TO_TOWN_X, FROM_FOREST_TO_TOWN_Y)); // 设置角色位置
-        player->setScale(1.0f); // 设置角色缩放比例
-    }
-    else if (nextScene == "Lake") {
-        newScene = LakeScene::getInstance();
-        player->setPosition(Vec2(FROM_LAKE_TO_TOWN_X, FROM_LAKE_TO_TOWN_Y)); // 设置角色位置
-        player->setScale(1.0f); // 设置角色缩放比例
-    }
-
     // 5. 将角色添加到新场景
     newScene->addChild(player);
 
     // 6. 切换到新场景
-    Director::getInstance()->replaceScene(newScene);
+    cocos2d::Director::getInstance()->replaceScene(newScene);
 }
 
 
 // 检查玩家是否到达触发地图切换的区域
-void TownScene::checkMapSwitch(const  Vec2& position) {
-    if (position.x < FROM_TOWN_TO_FARM_X && position.y>FROM_TOWN_TO_FARM_Y_DOWN && position.y < FROM_TOWN_TO_FARM_Y_UP) {
-        goToNextScene("Farm");
-    }
-    else if (position.y < FROM_TOWN_TO_BEACH_Y) {
-        goToNextScene("Beach");
-    }
-    else if (position.x< FROM_TOWN_TO_FOREST_X && position.y>FROM_TOWN_TO_FOREST_Y_DOWN && position.y < FROM_TOWN_TO_FOREST_Y_UP) {
-        goToNextScene("Forest");
-    }
-    else if (position.y > FROM_TOWN_TO_LAKE_Y) {
-        goToNextScene("Lake");
+void LakeScene::checkMapSwitch(const cocos2d::Vec2& position) {
+    if (position.y<FROM_LAKE_TO_TOWN_Y) {
+        goToNextScene("Town");
     }
 }
