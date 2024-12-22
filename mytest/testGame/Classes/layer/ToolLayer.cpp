@@ -113,7 +113,7 @@ void ToolLayer::switchTool(int index) {
 void ToolLayer::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
     // 判断按下的数字键
     if (keyCode >= EventKeyboard::KeyCode::KEY_1 && keyCode <= EventKeyboard::KeyCode::KEY_9) {
-        int index = static_cast<int>(keyCode) - 49; // 计算工具索引
+        int index = static_cast<int>(keyCode) - 77; // 计算工具索引
         if (index < toolSlots.size()) {
             switchTool(index);
         }

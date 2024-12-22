@@ -123,6 +123,9 @@ void ForestScene::goToNextScene(const std::string& nextScene) {
     // 2. 从当前场景移除角色
     if (currentScene && player->getParent() == currentScene) {
         player->removeFromParent();
+        StoppingLayer::getInstance()->removeFromParent();
+        InventoryLayer::getInstance()->removeFromParent();
+        ToolLayer::getInstance()->removeFromParent();
     }
 
     // 3. 创建新场景

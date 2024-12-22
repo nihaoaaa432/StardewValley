@@ -72,6 +72,42 @@ bool MapScene::init() {
     keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
     keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+    
+    // 获取 ToolLayer 单例实例并添加到场景中
+    auto toolLayer = ToolLayer::getInstance();
+    if (!toolLayer) {
+this->addChild(toolLayer, 100);
+
+    // 初始化工具栏，传入工具图片列表
+    std::vector<std::string> toolImages = {
+        "Tool1.png",
+        "Tool2.png",
+        "Tool3.png",
+        "Tool4.png",
+        "Tool5.png",
+        // 添加更多工具图片
+    };
+    toolLayer->initToolBar(toolImages);
+    }
+    
+
+
+    // 创建背包层
+    auto inventoryLayer = InventoryLayer::getInstance();
+    if (!inventoryLayer) {
+        inventoryLayer->setVisible(false);  // 默认隐藏背包界面
+        this->addChild(inventoryLayer, 2);  // 将背包界面添加到场景中
+    }
+
+
+    // 创建暂停层
+    auto stoppingLayer = StoppingLayer::getInstance();
+    if (!stoppingLayer) {
+    stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
+    this->addChild(stoppingLayer, 1000);  // 将暂停界面添加到场景中
+    }
+    
+
 
     //键盘事件
     mouthEvent();

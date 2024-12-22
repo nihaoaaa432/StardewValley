@@ -46,10 +46,7 @@ bool TownScene::init() {
     map->setPosition(Vec2(0, 0));  // 设置地图的位置    // 设置地图锚点，确保地图从左下角开始渲染
     this->addChild(map);
 
-    //// 创建角色精灵
-    //Player::getInstance()->setPosition( Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
-    //this->addChild(Player::getInstance());
-// 获取 ToolLayer 单例实例并添加到场景中
+    // 获取 ToolLayer 单例实例并添加到场景中
     auto toolLayer = ToolLayer::getInstance();
     this->addChild(toolLayer, 100);
 
@@ -64,6 +61,11 @@ bool TownScene::init() {
     };
     toolLayer->initToolBar(toolImages);
 
+    // 键盘事件监听器
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(ParentScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(ParentScene::onKeyReleased, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     // 创建背包层
     auto inventoryLayer = InventoryLayer::getInstance();
@@ -74,7 +76,11 @@ bool TownScene::init() {
     auto stoppingLayer = StoppingLayer::getInstance();
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
     this->addChild(stoppingLayer, 1000);  // 将暂停界面添加到场景中
-    mouthEvent();
+
+
+    //// 创建角色精灵
+    //Player::getInstance()->setPosition( Vec2(Player::getInstance()->getPosition().x, Player::getInstance()->getPosition().y));  // 初始位置
+    //this->addChild(Player::getInstance());
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
@@ -131,6 +137,10 @@ void TownScene::goToNextScene(const std::string& nextScene) {
     // 2. 从当前场景移除角色
     if (currentScene && player->getParent() == currentScene) {
         player->removeFromParent();
+        StoppingLayer::getInstance()->removeFromParent();
+        InventoryLayer::getInstance()->removeFromParent();
+        ToolLayer::getInstance()->removeFromParent();
+        
     }
 
     // 3. 创建新场景
