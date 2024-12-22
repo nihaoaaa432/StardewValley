@@ -57,10 +57,6 @@ void ToolLayer::initToolBar(const std::vector<std::string>& toolImages) {
     backgroundSprite->setPosition(Vec2(toolLayout->getContentSize().width / 2, toolLayout->getContentSize().height / 2+25));
     toolLayout->addChild(backgroundSprite, -1); // 将背景图添加到工具栏容器的最底层
 
-    //// 设置背景颜色（可选）
-    //toolLayout->setBackGroundColor(Color3B::GRAY);
-    //toolLayout->setBackGroundColorType(ui::Layout::BackGroundColorType::SOLID);
-
     this->addChild(toolLayout);
 
     // 根据工具数量动态创建工具槽
@@ -115,7 +111,6 @@ void ToolLayer::switchTool(int index) {
             toolSlots[i]->setColor(Color3B::WHITE); // 恢复其他工具槽颜色
         }
     }
-
     // 更新标签显示当前选中的工具索引
     currentToolLabel->setString("Current Tool: " + std::to_string(currentToolIndex + 1));
 
@@ -189,4 +184,7 @@ void ToolLayer::updatePosition(cocos2d::Vec2 position) {
     auto backpackSize = this->getContentSize(); // 假设背包界面有getContentSize()方法
     position = position - Vec2(backpackSize.width / 2, backpackSize.height / 2);
     this->setPosition(position);
-};
+}
+int ToolLayer::getSize(){
+    return toolSlots.size();;
+}

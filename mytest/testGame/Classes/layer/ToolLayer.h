@@ -18,6 +18,9 @@ public:
     // 更新背包界面位置
     void updatePosition(cocos2d::Vec2 position);
 
+    //获取工具栏大小
+    int getSize();
+
 private:
     // 构造函数和析构函数私有化，防止外部创建实例
     ToolLayer();

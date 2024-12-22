@@ -112,6 +112,7 @@ void MapScene::update(float deltaTime) {
 void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
     auto inventoryLayer = InventoryLayer::getInstance();
     auto stoppingLayer = StoppingLayer::getInstance();
+    auto toolLayer = ToolLayer::getInstance();
     switch (keyCode) {
     case cocos2d::EventKeyboard::KeyCode::KEY_W:
         moveDirection = cocos2d::Vec2(0, 1);  // 向上
@@ -128,6 +129,12 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
 
     default:
         break;
+    }
+    if (keyCode >= cocos2d::EventKeyboard::KeyCode::KEY_1 && keyCode <= cocos2d::EventKeyboard::KeyCode::KEY_9) {
+        int index = static_cast<int>(keyCode) - 77; // 计算工具索引
+        if (index < toolLayer->getSize()) {
+            toolLayer->switchTool(index);
+        }
     }
     if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
         onBKeyPressed();
