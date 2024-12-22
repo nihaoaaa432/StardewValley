@@ -96,7 +96,7 @@ this->addChild(toolLayer, 100);
     auto inventoryLayer = InventoryLayer::getInstance();
     if (!inventoryLayer) {
         inventoryLayer->setVisible(false);  // 默认隐藏背包界面
-        this->addChild(inventoryLayer, 2);  // 将背包界面添加到场景中
+        this->addChild(inventoryLayer, 3);  // 将背包界面添加到场景中
     }
 
 
@@ -126,6 +126,24 @@ this->addChild(toolLayer, 100);
     //// 创建并添加UI层
     //UILayer* uiLayer = UILayer::createLayer();
     //this->addChild(uiLayer, 100000);  // 确保它在最上层
+
+
+    auto corn = Crops::create(Corn);
+    this->addChild(corn);
+    corn->setPosition(Vec2(800, 600));
+
+    auto tomato = Crops::create(Tomato);
+    this->addChild(tomato);
+    tomato->setPosition(Vec2(800, 500));
+
+    auto potato = Crops::create(Potato);
+    this->addChild(potato);
+    potato->setPosition(Vec2(800, 550));
+
+    auto watermelon = Crops::create(Watermelon);
+    this->addChild(watermelon);
+    watermelon->setPosition(Vec2(800, 450));
+
 
     // 每帧更新
     this->schedule([=](float deltaTime) {
@@ -259,6 +277,7 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     // 1. 获取当前场景
     auto currentScene = Director::getInstance()->getRunningScene();
     auto player = Player::getInstance();
+
     DialogSystem::getInstance()->destroyInstance();
     // 2. 获取并移除时钟节点的父节点
     auto clock = Clock::getInstance();
@@ -279,6 +298,7 @@ void MapScene::goToNextScene(const std::string& nextScene) {
         StoppingLayer::getInstance()->removeFromParent();
         InventoryLayer::getInstance()->removeFromParent();
         ToolLayer::getInstance()->removeFromParent();
+        
     }
 
 
