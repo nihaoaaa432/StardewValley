@@ -58,24 +58,59 @@ bool MapScene::init() {
         return false;
     }
 
+
+
     // 加载地图
     map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
     map->setAnchorPoint(cocos2d::Vec2(0, 0));  // 将锚点设置为中心
     map->setPosition(cocos2d::Vec2(0, 0));  // 设置地图的位置
     this->addChild(map);
 
+    // 创建角色精灵
+    player = cocos2d::Sprite::create("sand.png");
+    player->setPosition(cocos2d::Vec2(0, 0));  // 初始位置
+    this->addChild(player);
+
+    // 获取 ToolLayer 单例实例并添加到场景中
+    auto toolLayer = ToolLayer::getInstance();
+    this->addChild(toolLayer,2);
+
+    // 初始化工具栏，传入工具图片列表
+    std::vector<std::string> toolImages = {
+        "Tool1.png",
+        "Tool2.png",
+        "Tool3.png",
+        "Tool4.png",
+        "Tool5.png",
+        // 添加更多工具图片
+    };
+    toolLayer->initToolBar(toolImages);
+
+
     // 创建背包层
-    inventoryLayer = InventoryLayer::createLayer();
+    auto inventoryLayer = InventoryLayer::getInstance();
     inventoryLayer->setVisible(false);  // 默认隐藏背包界面
-    this->addChild(inventoryLayer);  // 将背包界面添加到场景中
+    this->addChild(inventoryLayer,2);  // 将背包界面添加到场景中
 
     // 创建暂停层
-    stoppingLayer = StoppingLayer::createLayer();
+    auto stoppingLayer = StoppingLayer::getInstance();
     stoppingLayer->setVisible(false);  // 默认隐藏暂停界面
-    this->addChild(stoppingLayer);  // 将暂停界面添加到场景中
+
+    this->addChild(stoppingLayer,2);  // 将暂停界面添加到场景中
 
     // 设置镜头初始高度
     setCameraHeight(50.0f);  // 根据需要调整这个值
+
+    // 键盘事件监听器
+    auto keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(MapScene::onKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(MapScene::onKeyReleased, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    auto mouseGet = MouseCoordinateLayer::create();
+    this->addChild(mouseGet);
+    //mouseGet->setPosition(cocos2d::Vec2(0,0));
+
     //键盘事件
     mouthEvent();
     JohnMove();
@@ -93,15 +128,82 @@ bool MapScene::init() {
     // 创建并添加UI层
     UILayer* uiLayer = UILayer::createLayer();
     this->addChild(uiLayer, 100000);  // 确保它在最上层
+
     // 每帧更新
     this->schedule([=](float deltaTime) {
         update(deltaTime);
-
-        }, 0.02f, "update_key");
+      }, 0.02f, "update_key");
     this->addChild(DialogSystem::getInstance());
-
-
     return true;
+}
+
+void MapScene::update(float deltaTime) {
+    if (moveDirection != cocos2d::Vec2::ZERO) {
+        cocos2d::Vec2 newPosition = player->getPosition() + moveDirection * speed * deltaTime;
+        if (canMoveToPosition(newPosition)) {
+            player->setPosition(newPosition);  // 只有可以移动时才更新位置
+        }
+    }
+    //checkMapSwitch(player->getPosition());
+
+    // 更新镜头位置，确保镜头跟随角色
+    updateCameraPosition();
+
+    //背包处于打开状态时以任务为中心
+    auto inventoryLayer = InventoryLayer::getInstance();
+    if (inventoryLayer->isVisible()) {
+        inventoryLayer->updatePosition(player->getPosition());
+    }
+    auto stoppingLayer = StoppingLayer::getInstance();
+    if (stoppingLayer->isVisible()) {
+        stoppingLayer->updatePosition(player->getPosition());
+    }
+    auto toolLayer = ToolLayer::getInstance();
+    toolLayer->updatePosition(player->getPosition());
+}
+
+void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event) {
+    auto inventoryLayer = InventoryLayer::getInstance();
+    auto stoppingLayer = StoppingLayer::getInstance();
+    auto toolLayer = ToolLayer::getInstance();
+    switch (keyCode) {
+    case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        moveDirection = cocos2d::Vec2(0, 1);  // 向上
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_S:
+        moveDirection = cocos2d::Vec2(0, -1); // 向下
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        moveDirection = cocos2d::Vec2(-1, 0); // 向左
+        break;
+    case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        moveDirection = cocos2d::Vec2(1, 0);  // 向右
+        break;
+
+    default:
+        break;
+    }
+    if (keyCode >= cocos2d::EventKeyboard::KeyCode::KEY_1 && keyCode <= cocos2d::EventKeyboard::KeyCode::KEY_9) {
+        int index = static_cast<int>(keyCode) - 77; // 计算工具索引
+        if (index < toolLayer->getSize()) {
+            toolLayer->switchTool(index);
+        }
+    }
+    if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_B) {
+        onBKeyPressed();
+    }
+    else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
+        stoppingLayer->onEscPress();
+    }
+
+
+}
+
+void MapScene::onBKeyPressed() {
+    auto stoppingLayer = StoppingLayer::getInstance();
+    auto inventoryLayer = InventoryLayer::getInstance();
+    // 处理 "B" 键被按下的逻辑
+    if(!stoppingLayer->isVisible()) inventoryLayer->setVisible(!inventoryLayer->isVisible());
 }
 
 
@@ -188,7 +290,14 @@ void MapScene::goToNextScene(const std::string& nextScene) {
     // 7. 切换到新场景
     cocos2d::Director::getInstance()->replaceScene(newScene);
 }
-
+//void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
+//    if (position.x > FROM_FARM_TO_TOWN_X) {
+//        auto townScene = TownScene::getInstance();
+//        townScene->setPlayerPosition(cocos2d::Vec2(FROM_TOWN_TO_FARM_X + 16, FROM_TOWN_TO_FARM_Y));
+//        moveDirection = cocos2d::Vec2::ZERO; // 停止角色移动
+//        cocos2d::Director::getInstance()->pushScene(cocos2d::TransitionFade::create(0.3, TownScene::getInstance(), cocos2d::Color3B::WHITE));
+//    }
+//}
 
 void MapScene::checkMapSwitch(const cocos2d::Vec2& position) {
     if (position.x > FROM_FARM_TO_TOWN_X) {

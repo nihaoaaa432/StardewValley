@@ -1,8 +1,9 @@
 #pragma once
 #include "cocos2d.h"
+#include "layer/InventoryLayer.h" 
+#include "layer/StoppingLayer.h"
+#include "layer/ToolLayer.h"
 #include "ParentScene.h"
-#include "layer/inventoryLayer.h" 
-#include"layer/StoppingLayer.h"
 #include "character/Player.h"
 
 #include "ForestScene.h"
@@ -31,11 +32,14 @@ private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
     static MapScene* _instance; // 静态单例指针
-
-    InventoryLayer* inventoryLayer; //背包界面层
-    StoppingLayer* stoppingLayer;    // 暂停界面层
-
-    void goToNextScene(const std::string& nextScene);
+    void update(float deltaTime);    // 每帧更新函数
+    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onBKeyPressed();
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     bool canMoveToPosition(const cocos2d::Vec2& position);  // 检测是否可以移动到目标位置
+    void setCameraHeight(float height);
+    void updateCameraPosition();
+    void goToNextScene(const std::string& nextScene);
     void checkMapSwitch(const cocos2d::Vec2& position);
 };
+

@@ -1,100 +1,123 @@
 #include "InventoryLayer.h"
-
+#include "StoppingLayer.h"
+#include "../scene/MapScene.h"
+#include "cocos2d.h"
 USING_NS_CC;
 
-InventoryLayer* InventoryLayer::createLayer() {
-    InventoryLayer* ret = new(std::nothrow) InventoryLayer();
-    if (ret && ret->init()) {
-        ret->autorelease();
-        return ret;
+// å•ä¾‹å¯¹è±¡æŒ‡é’ˆåˆå§‹åŒ–ä¸ºnullptr
+InventoryLayer* InventoryLayer::_instance = nullptr;
+
+// è·å–å•ä¾‹å¯¹è±¡
+InventoryLayer* InventoryLayer::getInstance() {
+    if (_instance == nullptr) {
+        _instance = new InventoryLayer;
+        if (!_instance->init()) {
+            delete _instance;
+            _instance = nullptr;
+            CCLOG("InventoryLayer initialization failed!");
+        }
     }
-    else {
-        delete ret;
-        return nullptr;
-    }
+    return _instance;
 }
 
+// åˆå§‹åŒ–å•ä¾‹å¯¹è±¡
 bool InventoryLayer::init() {
     if (!Layer::init()) {
         return false;
     }
 
-    // »ñÈ¡ÆÁÄ»³ß´ç
+    // è·å–å±å¹•å°ºå¯¸
     auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
-    // ±³°ü±³¾°
+    // èƒŒåŒ…èƒŒæ™¯
     auto background = Sprite::create("Inventory.png");
-    background->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+    background->setPosition(Vec2(visibleSize.width / 2 + origin.x-20, visibleSize.height / 2 + origin.y+40));
     this->addChild(background, 1);
 
-    // ´´½¨²à±ß°´Å¥À¸
-    auto buttonBar = Node::create(); // °´Å¥À¸½Úµã£¬Ö¸Õë±íÊ¾Êı×é
+    // åˆ›å»ºä¾§è¾¹æŒ‰é’®æ 
+    buttonBar = Node::create(); // æŒ‰é’®æ èŠ‚ç‚¹ï¼ŒæŒ‡é’ˆè¡¨ç¤ºæ•°ç»„
     buttonBar->setPosition(Vec2(953, 567));
     this->addChild(buttonBar, 2);
 
-    // Ìí¼Ó°´Å¥£¨ÎïÆ·¡¢Éç½»£©
-    auto itemButton = ui::Button::create("Invnt_backpack.png"); // ÎïÆ·°´Å¥
+    // åˆ›å»ºç‰©å“é¡µé¢
+    itemPage = Layer::create();
+    itemPage->setName("ItemPage");  // è®¾ç½®åç§°ä»¥ä¾¿è°ƒè¯•
+    this->addChild(itemPage, 1);
+
+    // åœ¨ç‰©å“é¡µé¢ä¸­æ·»åŠ å†…å®¹
+    auto itemLabel = Label::createWithSystemFont("itemPage", "Arial", 30);
+    itemLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+    itemPage->addChild(itemLabel);
+
+    // åˆ›å»ºç¤¾äº¤é¡µé¢
+    socialPage = Layer::create();
+    auto socialBackground= Sprite::create("SocialPage.png");
+    socialBackground->setPosition(Vec2(visibleSize.width / 2 + origin.x+70, visibleSize.height / 2 + origin.y+35));
+    
+    // è·å–èƒŒæ™¯å›¾çš„åŸå§‹å¤§å°
+    Size backgroundSize = socialBackground->getContentSize();
+    // è®¾ç½®èƒŒæ™¯å›¾çš„ç¼©æ”¾æ¯”ä¾‹
+    socialBackground->setScale(0.8f);
+
+    socialPage->addChild(socialBackground, 1);
+    socialPage->setName("SocialPage");  // è®¾ç½®åç§°ä»¥ä¾¿è°ƒè¯•
+    this->addChild(socialPage, 1);
+
+    // åœ¨ç¤¾äº¤é¡µé¢ä¸­æ·»åŠ å†…å®¹
+    auto socialLabel = Label::createWithSystemFont("SocialPage", "Arial", 30);
+    socialLabel->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+    socialPage->addChild(socialLabel,2);
+
+    // æ·»åŠ æŒ‰é’®ï¼ˆç‰©å“ã€ç¤¾äº¤ï¼‰
+    auto itemButton = ui::Button::create("ItemButton.png"); // ç‰©å“æŒ‰é’®
     itemButton->setContentSize(Size(60, 60));
-    itemButton->setPosition(Vec2(0, -80));
+    itemButton->setPosition(Vec2(33, -33));
     buttonBar->addChild(itemButton);
 
-    auto socialButton = ui::Button::create("Invnt_social.png"); // Éç½»°´Å¥
+
+    auto socialButton = ui::Button::create("SocialButton.png"); // ç¤¾äº¤æŒ‰é’®
     socialButton->setContentSize(Size(60, 60));
-    socialButton->setPosition(Vec2(0,-180 ));
+
+    socialButton->setPosition(Vec2(33, -123));
     buttonBar->addChild(socialButton);
 
-    // Ìí¼Ó°´Å¥»Øµ÷£¨ÓÃÓÚÇĞ»»Ò³Ãæ£©
-    itemButton->addClickEventListener([this](Ref* sender) {
-        this->switchToPage(0); // ÇĞ»»µ½ÎïÆ·Ò³Ãæ
-        });
+    // é»˜è®¤æ˜¾ç¤ºç‰©å“é¡µé¢
+    currentPage = 0;
+    switchToPage(currentPage);
 
-    socialButton->addClickEventListener([this](Ref* sender) {
-        this->switchToPage(1); // ÇĞ»»µ½Éç½»¹ØÏµÒ³Ãæ
-        });
 
-    //// ´´½¨ÎïÆ·Ò³Ãæ
-    //itemPage = Node::create();
-    //this->addChild(itemPage, 2);
-
-    //// Ê¾ÀıÎïÆ·Ò³ÃæÄÚÈİ
-    //auto itemLabel = Label::createWithTTF("ÎïÆ·Ò³Ãæ", "fonts/arial.ttf", 24);
-    //itemLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    //itemPage->addChild(itemLabel);
-
-    //// ´´½¨Éç½»Ò³Ãæ
-    //socialPage = Node::create();
-    //this->addChild(socialPage, 2);
-
-    //// Ê¾ÀıÉç½»Ò³ÃæÄÚÈİ
-    //auto socialLabel = Label::createWithTTF("Éç½»¹ØÏµÒ³Ãæ", "fonts/arial.ttf", 24);
-    //socialLabel->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    //socialPage->addChild(socialLabel);
-
-    // Ä¬ÈÏÏÔÊ¾ÎïÆ·Ò³Ãæ
-    /*currentPage = 0;
-    switchToPage(currentPage);*/
-
-    // Ìí¼ÓÊó±ê¼àÌıÊÂ¼ş
+    // æ·»åŠ é¼ æ ‡ç›‘å¬äº‹ä»¶
     auto listener = EventListenerMouse::create();
     listener->onMouseDown = CC_CALLBACK_1(InventoryLayer::onMouseDown, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    // ´´½¨¹Ø±Õ°´Å¥
-    auto closeButton = ui::Button::create("close.png");  // ¹Ø±Õ°´Å¥
-    closeButton->setPosition(Vec2(955, 565)); // ·ÅÔÚÓÒÉÏ½Ç
-    this->addChild(closeButton, 3);
+    // æ·»åŠ æŒ‰é’®å›è°ƒï¼ˆç”¨äºåˆ‡æ¢é¡µé¢ï¼‰
+    itemButton->addClickEventListener([this](Ref* sender) {
+        this->switchToPage(0); // åˆ‡æ¢åˆ°ç‰©å“é¡µé¢
+        });
 
-    // ¹Ø±Õ°´Å¥µÄ»Øµ÷
-    closeButton->addClickEventListener(CC_CALLBACK_1(InventoryLayer::closeInventoryLayer, this));
+    socialButton->addClickEventListener([this](Ref* sender) {
+        this->switchToPage(1); // åˆ‡æ¢åˆ°ç¤¾äº¤å…³ç³»é¡µé¢
+        });
 
     return true;
 }
 
-// ÇĞ»»Ò³Ãæ
+
+// æ›´æ–°èƒŒåŒ…ç•Œé¢ä½ç½®
+void InventoryLayer::updatePosition(cocos2d::Vec2 position) {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    auto backpackSize = this->getContentSize(); // å‡è®¾èƒŒåŒ…ç•Œé¢æœ‰getContentSize()æ–¹æ³•
+    position = position - Vec2(backpackSize.width / 2, backpackSize.height / 2);
+    this->setPosition(position);
+};
+
+// åˆ‡æ¢é¡µé¢
 void InventoryLayer::switchToPage(int pageIndex) {
-    // ÉèÖÃÒ³ÃæµÄ¿É¼ûĞÔ
+    // è®¾ç½®é¡µé¢çš„å¯è§æ€§
     if (pageIndex == 0) {
+        
         itemPage->setVisible(true);
         socialPage->setVisible(false);
     }
@@ -102,33 +125,43 @@ void InventoryLayer::switchToPage(int pageIndex) {
         itemPage->setVisible(false);
         socialPage->setVisible(true);
     }
-    currentPage = pageIndex; // ¸üĞÂµ±Ç°Ò³ÃæË÷Òı
+    currentPage = pageIndex; // æ›´æ–°å½“å‰é¡µé¢ç´¢å¼•
 }
 
-// Êó±êµã»÷ÊÂ¼ş
-void InventoryLayer::onMouseDown(Event* event) {
+// é¼ æ ‡ç‚¹å‡»äº‹ä»¶
+void InventoryLayer::onMouseDown(cocos2d::Event* event) {
     auto mouseEvent = (EventMouse*)event;
     auto mousePos = mouseEvent->getLocation();
 
-    // »ñÈ¡°´Å¥ÇøÓò£¨ÎïÆ·°´Å¥ºÍÉç½»°´Å¥µÄ¾ØĞÎÇøÓò£©
+    // è·å–æŒ‰é’®åŒºåŸŸï¼ˆç‰©å“æŒ‰é’®å’Œç¤¾äº¤æŒ‰é’®çš„çŸ©å½¢åŒºåŸŸï¼‰
     auto itemButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 - 150, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
     auto socialButtonArea = Rect(Director::getInstance()->getVisibleSize().width / 2 + 50, Director::getInstance()->getVisibleSize().height - 70, 100, 50);
 
-    // ÅĞ¶ÏÊó±êµã»÷µÄÇøÓò
+    auto stoppingPlayer = StoppingLayer::getInstance();
+    if (stoppingPlayer->isVisible())  return;
+
+    // åˆ¤æ–­é¼ æ ‡ç‚¹å‡»çš„åŒºåŸŸ
     if (itemButtonArea.containsPoint(mousePos)) {
-        switchToPage(0);  // ÇĞ»»µ½ÎïÆ·Ò³Ãæ
+        switchToPage(0);  // åˆ‡æ¢åˆ°ç‰©å“é¡µé¢
     }
     else if (socialButtonArea.containsPoint(mousePos)) {
-        switchToPage(1);  // ÇĞ»»µ½Éç½»Ò³Ãæ
+        switchToPage(1);  // åˆ‡æ¢åˆ°ç¤¾äº¤é¡µé¢
     }
 }
 
-// ¹Ø±Õ±³°ü½çÃæ
-void InventoryLayer::closeInventoryLayer(Ref* sender) {
-    // ¹Ø±Õµ±Ç°²ã
+// å…³é—­èƒŒåŒ…ç•Œé¢
+void InventoryLayer::closeInventoryLayer(cocos2d::Ref* sender) {
+    // å…³é—­å½“å‰å±‚
     Director::getInstance()->getRunningScene()->removeChild(this);
-    //auto player= Director::getInstance()
+}
 
-    //µ÷ÓÃ»Øµ÷º¯ÊıÍ¨Öª¹Ø±Õ±³°ü
-
+// è®¾ç½®å¯è§æ€§
+void InventoryLayer::setVisible(bool visible) {
+    Layer::setVisible(visible);
+    if (visible) {
+        CCLOG("InventoryLayer is now visible.");
+    }
+    else {
+        CCLOG("InventoryLayer is now hidden.");
+    }
 }

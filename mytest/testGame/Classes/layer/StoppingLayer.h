@@ -6,22 +6,36 @@
 
 class StoppingLayer : public cocos2d::Layer {
 public:
-    static StoppingLayer* createLayer();
+    // 获取单例对象
+    static StoppingLayer* getInstance();
 
+    // 初始化单例对象
     virtual bool init();
 
-
+    // 按下了设置按钮
     void onSettingButton(cocos2d::Ref* sender);
+    // 按下了退出游戏按钮
     void onQuitButton(cocos2d::Ref* sender);
+    // 按下了音乐按钮
+    void onMusicButton(cocos2d::Ref* sender);
+    // 按下了返回按钮
+    void onBackButton(cocos2d::Ref* sender);
 
-    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void updatePosition(cocos2d::Vec2 position);
+    // 处理esc按键
+    void onEscPress();
 
     CREATE_FUNC(StoppingLayer);
 
 private:
-    cocos2d::Node* menuNode;    // 菜单节点
-    cocos2d::ui::Button* settingButton;
-    cocos2d::ui::Button* quitButton;
+
+    // 销毁单例对象
+    static void destroyInstance();
+
+    static StoppingLayer* _instance; // 单例对象指针
+
+    cocos2d::Layer* settingLayer;
+
     int currentPage;            // 当前页面索引
 };
 
