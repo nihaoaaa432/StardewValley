@@ -1,7 +1,8 @@
 #include "Player.h"
 #include "layer/InventoryLayer.h"
+#include "Interactable.h"
 
-//#define ENABLE_ANIMATIONS
+//#define ENABLE_ANIMATIONS  行走动画 但是该功能存在问题
 
 USING_NS_CC;
 
@@ -40,11 +41,10 @@ Player* Player::create() {
         }
     }
 
-    else {
-        delete player;
-        player = nullptr;
-        return nullptr;
-    }
+    delete player;
+    player = nullptr;
+    return nullptr;
+
 }
 
 bool Player::init() {
@@ -52,14 +52,6 @@ bool Player::init() {
         return false;
     }
 
-    //// 每 0.1 秒调用一次 update 方法
-    //schedule([this](float delta) {
-    //    this->update(delta);
-    //   }, 0.1f, "player_update_key");
-    // 每帧更新
-    this->schedule([=](float deltaTime) {
-        update(deltaTime);
-        }, "update_key");
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("Abigail.plist");
 
     isMoving = false;
@@ -70,15 +62,14 @@ bool Player::init() {
     //初始化纹理
     sprite = Sprite::createWithSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName("init_" + name + ".png"));
     //初始位置均为0，0
-    sprite->setPosition(0, 0);
+
     this->addChild(sprite);
+    sprite->setPosition(0, 0);
 
 
 #ifdef ENABLE_ANIMATIONS
     loadAnimations();
 #endif
-    //move(Vec2(0, 1));
-    // playWalkAnimation("up");
 
     return true;
 }
@@ -122,69 +113,6 @@ Animate* Player::createIdleAnimation(const std::string& direction)
     return Animate::create(animation);
 }
 
-//void Player::onEnter()
-//{
-//      onEnter();
-//    //确保监听器在场景进入时注册
-//    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-//}
-//
-//void Player::onExit()
-//{
-//    //退出时注销键盘监听器
-//    _eventDispatcher->removeEventListener(keyboardListener);
-//      onExit();
-//}
-//
-////注册键盘事件
-//void Player::registerKeyboardEvent() {
-//    // 创建键盘事件监听器
-//    keyboardListener = EventListenerKeyboard::create();
-//
-//    // 定义按键按下的回调
-//    keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode keyCode, Event* event) {
-//        if (isInventoryOpen) {
-//            if (keyCode == EventKeyboard::KeyCode::KEY_B) {
-//                closeInventory();  // 关闭背包
-//            }
-//            return;  // 背包打开时，其他按键不响应
-//        }
-//
-//        if (isMoving) {
-//            return;
-//        }
-//
-//        // 按下控制移动的按键时
-//        switch (keyCode) {
-//        case EventKeyboard::KeyCode::KEY_A:
-//            moveInDirection(cocos2d::Vec2(-1, 0)); // 向左移动
-//            break;
-//        case EventKeyboard::KeyCode::KEY_D:
-//            move(cocos2d::Vec2(1, 0)); // 向右移动
-//            break;
-//        case EventKeyboard::KeyCode::KEY_W:
-//            moveInDirection(cocos2d::Vec2(0, 1)); // 向上移动
-//            break;
-//        case EventKeyboard::KeyCode::KEY_S:
-//            moveInDirection(cocos2d::Vec2(0, -1)); // 向下移动
-//            break;
-//        case EventKeyboard::KeyCode::KEY_B:
-//            openInventory();  // 打开背包
-//            break;
-//        default:
-//            break;
-//        }
-//        };
-//
-//    // 定义按键松开的回调
-//    keyboardListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, Event* event) {
-//        if (keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_D ||
-//            keyCode == EventKeyboard::KeyCode::KEY_W || keyCode == EventKeyboard::KeyCode::KEY_S) {
-//            stopMoving();
-//        }
-//        };
-//}
-
 // 统一的移动方法
 void Player::moveInDirection(const cocos2d::Vec2& direction) {
     if (isTalking) {
@@ -206,8 +134,9 @@ void Player::moveInDirection(const cocos2d::Vec2& direction) {
     else if (direction.x < 0) {
         lastDirection = "left";
     }
-
-   // playWalkAnimation(lastDirection);
+#ifdef ENABLE_ANIMATIONS
+    playWalkAnimation(lastDirection);
+#endif
 
     auto targetPosition = this->getPosition() + moveDirection * speed * 0.02f;
     this->setPosition(targetPosition);
@@ -224,8 +153,9 @@ void Player::stopMoving() {
 
     isMoving = false;
     moveDirection = Vec2::ZERO;
-
-    //playIdleAnimation(lastDirection);
+#ifdef ENABLE_ANIMATIONS
+    playIdleAnimation(lastDirection);
+#endif
 }
 // 播放行走动画
 void Player::playWalkAnimation(const std::string& direction) {
@@ -245,7 +175,7 @@ void Player::playWalkAnimation(const std::string& direction) {
             sprite->runAction(currentAction);
         }
     }
-    //}
+
 }
 
 // 播放站立帧
@@ -275,20 +205,9 @@ void Player::openInventory() {
         this->getParent()->addChild(inventoryLayer);
 
         isInventoryOpen = true;
-        // 禁用键盘事件，除非是 B 键
-        //_eventDispatcher->removeEventListener(keyboardListener);
-
-        //监听背包的关闭事件
     }
 }
-//
-//void Player::update(float delta)
-//{
-//    if (isMoving)
-//    {
-//        this->moveInDirection(moveDirection);
-//    }
-//}
+
 
 void Player::closeInventory() {
     if (isInventoryOpen) {
@@ -298,8 +217,6 @@ void Player::closeInventory() {
         }
 
         isInventoryOpen = false;
-        // 恢复键盘事件监听
-        //_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
     }
 
 }
@@ -319,4 +236,42 @@ void Player::stopAnimation() {
 Vec2& Player::getMoveDirection()
 {
     return moveDirection;
+}
+bool Player::interactWithClickPosition(const Vec2& clickPosition, std::vector<Interactable* >& interacts)//与点击位置交互
+{
+    //检查点击位置是否点击在某个可交互的结点上，并尝试收获
+    for (auto& interact : interacts)
+    {
+        if (interact->isClicked(clickPosition))
+        {
+            //如果该结点被点击
+            //计算人物与物品的距离
+            float distance = this->getPosition().distance(interact->getPosition());
+            const float interactionDistance = 50.0f;//设定交互的最大距离
+
+            if (distance <= interactionDistance)
+            {
+                interact->interact(this);
+                return true;
+            }
+
+        }
+    }
+    return false;
+}
+
+void Player::showHint(const std::string& message)
+{
+    //创建一个Label来显示信息
+    auto hintLabel = Label::createWithSystemFont(message, "fronts/Arial", 24);
+    hintLabel->setPosition(Vec2(this->getPosition().x, this->getPosition().y + 50)); // 显示在玩家上方
+    hintLabel->setColor(Color3B::WHITE);
+    this->getParent()->addChild(hintLabel);  // 添加到场景中
+
+    // 2秒后自动消失
+    auto fadeOut = FadeOut::create(2.0f);  // 创建2秒后淡出效果
+    auto remove = CallFunc::create([hintLabel]() { hintLabel->removeFromParent(); }); // 创建移除操作
+
+    // 执行淡出和移除操作
+    hintLabel->runAction(Sequence::create(fadeOut, remove, nullptr));
 }

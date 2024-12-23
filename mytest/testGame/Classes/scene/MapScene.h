@@ -7,6 +7,7 @@
 #include "character/Player.h"
 #include "ForestScene.h"
 #include "string"
+#include "character/Crops.h"
 #define RATIO 1.25f
 #define FROM_FARM_TO_TOWN_X 16 * 50 * RATIO
 #define FROM_FARM_TO_TOWN_Y 16*28.5*RATIO
@@ -31,6 +32,9 @@ private:
     cocos2d::TMXTiledMap* map;       // 地图
     cocos2d::Vec2 moveDirection;     // 移动方向
     static MapScene* _instance; // 静态单例指针
+
+    std::vector<Interactable*> interactbales;//可交互物品容器
+
     void update(float deltaTime);    // 每帧更新函数
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onBKeyPressed();
@@ -38,5 +42,9 @@ private:
     void goToNextScene(const std::string& nextScene);
     void checkMapSwitch(const cocos2d::Vec2& position);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+    //鼠标相关
+    void mouthEvent();    //总体调用函数
+    void onMouseDown(cocos2d::Event* event);
 };
 

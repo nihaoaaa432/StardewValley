@@ -1,8 +1,10 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+class Interactable;//只做前向声明
+
 #include "cocos2d.h"
-#include "cstring"
+#include <vector>
 
 //玩家初始化数据
 #define INIT_PLAYER_HEALTH  100
@@ -41,6 +43,8 @@ public:
 
 	void loadAnimations();//预加载所有动画
 
+	void showHint(const std::string& message);//显示提示，例如收获提示
+
 	cocos2d::Animate* createWalkAnimation(const std::string& direction);//创建行走动画
 
 	cocos2d::Animate* createIdleAnimation(const std::string& direction);//创建站立动画
@@ -55,6 +59,8 @@ public:
 
 	cocos2d::Vec2& getMoveDirection();//获取移动方向
 	void setIsTalking(bool talking);
+
+	bool interactWithClickPosition(const cocos2d::Vec2& clickPosition, std::vector< Interactable* >& interacts);//与点击位置交互
 private:
 	static Player* _instance;//静态单例指针
 

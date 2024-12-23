@@ -139,6 +139,9 @@
     <ClInclude Include="..\Classes\layer\ToolLayer.h">
       <Filter>src\ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\character\Interactable.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

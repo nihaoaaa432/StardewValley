@@ -5,7 +5,7 @@
 #include "character/Npc/John.h"
 #include "ui/clock.h"
 #include "character/Npc/DialogSystem.h"
-#include "character/Crops.h"
+
 
 USING_NS_CC;
 
@@ -57,6 +57,7 @@ bool MapScene::init() {
     if (!ParentScene::init()) {
         return false;
     }
+    srand(time(NULL));
 
     // 加载地图
     map = cocos2d::TMXTiledMap::create("farm/farm.tmx");
@@ -131,18 +132,22 @@ this->addChild(toolLayer, 100);
     auto corn = Crops::create(Corn);
     this->addChild(corn);
     corn->setPosition(Vec2(800, 600));
+    interactbales.push_back(corn);
 
     auto tomato = Crops::create(Tomato);
     this->addChild(tomato);
     tomato->setPosition(Vec2(800, 500));
+    interactbales.push_back(tomato);
 
     auto potato = Crops::create(Potato);
     this->addChild(potato);
     potato->setPosition(Vec2(800, 550));
+    interactbales.push_back(potato);
 
     auto watermelon = Crops::create(Watermelon);
     this->addChild(watermelon);
     watermelon->setPosition(Vec2(800, 450));
+    interactbales.push_back(watermelon);
 
 
     // 每帧更新
@@ -151,6 +156,34 @@ this->addChild(toolLayer, 100);
       }, 0.02f, "update_key");
     this->addChild(DialogSystem::getInstance());
     return true;
+}
+
+//鼠标总体调用函数
+void MapScene::mouthEvent()
+{
+    //创建一个鼠标监听器来检测点击
+    auto mouseListener = EventListenerMouse::create();
+    mouseListener->onMouseDown = CC_CALLBACK_1(MapScene::onMouseDown, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+}
+
+void MapScene::onMouseDown(Event* event)
+{
+    auto mouseEvent = static_cast<EventMouse*>(event);
+    Vec2 clickPosition = mouseEvent->getLocation();
+    clickPosition = this->convertToNodeSpace(clickPosition);
+    // 获取当前节点的位置
+    Vec2 nodePosition =  this->getPosition();
+
+    // 手动计算本地坐标
+    Vec2 localPosition = clickPosition - nodePosition;
+
+    CropsType cropName = static_cast<CropsType>(rand() % 9 + 1);
+
+    auto crop= Crops::create(cropName);
+    this->addChild(crop);
+    crop->setPosition(-localPosition);
+    interactbales.push_back(crop);
 }
 
 void MapScene::update(float deltaTime) {
@@ -177,6 +210,12 @@ void MapScene::update(float deltaTime) {
     }
     auto toolLayer = ToolLayer::getInstance();
     toolLayer->updatePosition(player->getPosition());
+
+    //更新场景上的可交互物品
+    for (auto interactable : interactbales)
+    {
+        interactable->update(deltaTime);
+    }
 }
 
 
