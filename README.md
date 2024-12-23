@@ -8,14 +8,19 @@
     ParentScene抽象类
     HelloWorldScene类
     以及其它的场景类基础
-2. 夏弘泰
+    分工占比：35%
+   
+3. 夏弘泰
     InventoryLayer类、StoppingLayer类
     ToolLayer类
-3. 陈帆
+    分工占比：35%
+   
+4. 陈帆
     Player类
     Crops类
     Interactable类
     Clock类
+    分工占比：30%
     
 # 项目组成
 
