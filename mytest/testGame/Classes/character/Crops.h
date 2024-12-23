@@ -64,9 +64,9 @@ public:
     void update();//更新农作物的生长阶段，修改纹理和是否成熟
 
     //判断是否点击在精灵附近
-    bool isClicked(const cocos2d::Vec2& clickPosition)override;
+    bool isInteracted(const cocos2d::Vec2& clickPosition)override;
 
-    void interact(Player* player)override;//重写交互函数
+    bool interact(Player* player)override;//重写交互函数
 
     void update(float deltaTime)override;
 

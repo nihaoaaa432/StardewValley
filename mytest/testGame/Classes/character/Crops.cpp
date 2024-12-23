@@ -112,25 +112,28 @@ void Crops::update(float deltaTime)
 }
 
 
-bool Crops::isClicked(const cocos2d::Vec2& clickPosition)
+bool Crops::isInteracted(const cocos2d::Vec2& clickPosition)
 {
     return this->getBoundingBox().containsPoint(clickPosition);
 }
 
-void Crops::interact(Player* player)
+bool Crops::interact(Player* player)
 {
     //如果成熟，执行收获操作
     if (matured)
     {
-        this->removeFromParent();
-        //修改Player,使其获得收获物
 
         //显示提示
         player->showHint(u8"收获" + harvestItem + std::to_string(harvestQuantity) + u8"个");
+        this->removeFromParent();
+        //修改Player,使其获得收获物
+        return true;
     }
     else
     {
         std::string sName = toString(name);
         player->showHint(sName + u8"尚未成熟，无法收获");
+
+        return false;
     }
 }

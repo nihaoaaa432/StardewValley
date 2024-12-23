@@ -12,9 +12,9 @@ protected:
     virtual ~Interactable() {};
 
     // 判断是否被点击到
-    virtual bool isClicked(const cocos2d::Vec2& clickPosition) = 0;
+    virtual bool isInteracted(const cocos2d::Vec2& clickPosition) = 0;
 
     // 执行交互行为
-    virtual void interact(Player* player) = 0;
+    virtual bool interact(Player* player) = 0;
 };
 #endif //_INTERACTABLE_H_

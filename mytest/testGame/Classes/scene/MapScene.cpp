@@ -253,7 +253,22 @@ void MapScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Ev
     else if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
         stoppingLayer->onEscPress();
     }
+    else if (!stoppingLayer->isVisible() && keyCode == cocos2d::EventKeyboard::KeyCode::KEY_F)
+    {
+        auto player = Player::getInstance();
+        auto pos = player->getPosition();
+        
+        if (!player->interactWithClickPosition(pos, interactbales))
+        {
+            CropsType cropName = static_cast<CropsType>(rand() % 9 + 1);
 
+            auto crop = Crops::create(cropName);
+            this->addChild(crop);
+            crop->setPosition(pos);
+            interactbales.push_back(crop);
+        }
+    }
+    
 
 }
 

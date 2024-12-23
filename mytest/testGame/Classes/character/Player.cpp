@@ -237,21 +237,24 @@ Vec2& Player::getMoveDirection()
 {
     return moveDirection;
 }
-bool Player::interactWithClickPosition(const Vec2& clickPosition, std::vector<Interactable* >& interacts)//与点击位置交互
+bool Player::interactWithClickPosition(const Vec2& Position, std::vector<Interactable* >& interacts)//与点击位置交互
 {
     //检查点击位置是否点击在某个可交互的结点上，并尝试收获
     for (auto& interact : interacts)
     {
-        if (interact->isClicked(clickPosition))
+        if (interact->isInteracted(Position))
         {
             //如果该结点被点击
             //计算人物与物品的距离
             float distance = this->getPosition().distance(interact->getPosition());
-            const float interactionDistance = 50.0f;//设定交互的最大距离
+            const float interactionDistance = 100.0f;//设定交互的最大距离
 
             if (distance <= interactionDistance)
             {
-                interact->interact(this);
+                if (interact->interact(this))//收获成功
+                {
+                    interacts.erase(std::remove(interacts.begin(), interacts.end(), interact), interacts.end());
+                }
                 return true;
             }
 
